@@ -167,3 +167,9 @@ Chronora/
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+## Authors
+
+This project was developed by **Mohamed Ourhouch** and **Haytham Ezzahir**.

@@ -1,32 +1,17 @@
 "use client";
 
 interface FooterProps {
-  subtextColor: string;
+  darkMode?: boolean;
 }
 
-export default function Footer({ subtextColor }: FooterProps) {
+export default function Footer({ darkMode = false }: FooterProps) {
   return (
-    <footer
-      style={{
-        textAlign: "center",
-        padding: "16px 0 24px",
-        display: "flex",
-        justifyContent: "center",
-        gap: 24,
-      }}
-    >
+    <footer className="flex justify-center gap-6 py-6">
       {["Help Center", "Status", "Safety"].map((item) => (
         <a
           key={item}
           href="#"
-          style={{
-            fontSize: 13,
-            color: subtextColor,
-            textDecoration: "none",
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#3b82f6")}
-          onMouseLeave={(e) => ((e.target as HTMLElement).style.color = subtextColor)}
+          className={`text-xs transition-colors duration-200 hover:text-blue-500 ${darkMode ? "text-gray-500" : "text-gray-400"}`}
         >
           {item}
         </a>

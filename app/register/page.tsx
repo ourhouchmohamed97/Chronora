@@ -6,7 +6,7 @@ import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
 
-export default function ChronoraSignup() {
+export default function RegisterPage() {
   const [agreed, setAgreed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -16,15 +16,6 @@ export default function ChronoraSignup() {
     link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
     document.head.appendChild(link);
   }, []);
-
-  // Theme tokens
-  const bg          = darkMode ? "#0f0f13" : "#f0f0f5";
-  const cardBg      = darkMode ? "#1a1a22" : "#ffffff";
-  const text        = darkMode ? "#e8e8f0" : "#1a1a2e";
-  const subtext     = darkMode ? "#888"    : "#666";
-  const inputBg     = darkMode ? "#0f0f13" : "#f8f8fc";
-  const inputBorder = darkMode ? "#2a2a38" : "#e0e0ea";
-  const inputText   = darkMode ? "#e8e8f0" : "#1a1a2e";
 
   const UserIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -40,79 +31,38 @@ export default function ChronoraSignup() {
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background: bg,
-        fontFamily: "'Inter', 'Segoe UI', sans-serif",
-        transition: "background 0.3s",
-      }}
+      className={`min-h-screen transition-colors duration-300 font-[Inter,sans-serif] ${darkMode ? "bg-[#0f0f13]" : "bg-gray-100"}`}
     >
       <Navbar darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
 
       {/* Main content */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "calc(100vh - 60px)",
-          padding: "40px 16px",
-        }}
-      >
+      <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-10">
+
         {/* Card */}
-        <div
-          style={{
-            background: cardBg,
-            borderRadius: 20,
-            padding: "28px 32px",
-            width: "100%",
-            maxWidth: 360,
-            boxShadow: darkMode
-              ? "0 0 0 1px #2a2a38, 0 24px 48px rgba(0,0,0,0.4)"
-              : "0 0 0 1px #e0e0ea, 0 24px 48px rgba(79,110,247,0.08)",
-            transition: "background 0.3s, box-shadow 0.3s",
-          }}
+        <div className={`w-full max-w-sm rounded-2xl p-8 transition-all duration-300
+          ${darkMode
+            ? "bg-[#1a1a22] shadow-[0_0_0_1px_#2a2a38,0_24px_48px_rgba(0,0,0,0.4)]"
+            : "bg-white shadow-[0_0_0_1px_#e5e7eb,0_24px_48px_rgba(59,130,246,0.08)]"
+          }`}
         >
           {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: 20 }}>
-            <h1
-              style={{
-                margin: "0 0 8px",
-                fontSize: 22,
-                fontWeight: 800,
-                color: text,
-                letterSpacing: "-0.03em",
-                fontFamily: "'Inter', sans-serif",
-              }}
-            >
+          <div className="text-center mb-5">
+            <h1 className={`text-2xl font-extrabold tracking-tight mb-1 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
               Create an account
             </h1>
-            <p style={{ margin: 0, fontSize: 14, color: subtext }}>
+            <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
               Start optimizing your study routine with AI today.
             </p>
           </div>
 
           {/* Google Button */}
           <button
-            style={{
-              width: "100%",
-              padding: "11px",
-              borderRadius: 10,
-              border: `1px solid ${inputBorder}`,
-              background: inputBg,
-              color: text,
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              transition: "border-color 0.2s, background 0.2s",
-              marginBottom: 16,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#3b82f6")}
-            onMouseLeave={(e) => (e.currentTarget.style.borderColor = inputBorder)}
+            className={`w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
+              hover:border-blue-500
+              ${darkMode
+                ? "bg-[#0f0f13] border-[#2a2a38] text-gray-200"
+                : "bg-gray-50 border-gray-200 text-gray-700"
+              }`}
           >
             <svg width="18" height="18" viewBox="0 0 18 18">
               <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z" />
@@ -124,24 +74,21 @@ export default function ChronoraSignup() {
           </button>
 
           {/* Divider */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-            <div style={{ flex: 1, height: 1, background: inputBorder }} />
-            <span style={{ fontSize: 12, color: subtext, whiteSpace: "nowrap" }}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className={`flex-1 h-px ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`} />
+            <span className={`text-[11px] whitespace-nowrap tracking-widest font-medium ${darkMode ? "text-gray-600" : "text-gray-400"}`}>
               OR CONTINUE WITH EMAIL
             </span>
-            <div style={{ flex: 1, height: 1, background: inputBorder }} />
+            <div className={`flex-1 h-px ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`} />
           </div>
 
           {/* Form */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="flex flex-col gap-3">
             <FormInput
               label="Full Name"
               placeholder="Jane Doe"
               icon={<UserIcon />}
-              inputBg={inputBg}
-              inputBorder={inputBorder}
-              inputText={inputText}
-              labelColor={text}
+              darkMode={darkMode}
             />
 
             <FormInput
@@ -149,32 +96,23 @@ export default function ChronoraSignup() {
               type="email"
               placeholder="name@example.com"
               icon={<MailIcon />}
-              inputBg={inputBg}
-              inputBorder={inputBorder}
-              inputText={inputText}
-              labelColor={text}
+              darkMode={darkMode}
             />
 
-            <PasswordInput
-              inputBg={inputBg}
-              inputBorder={inputBorder}
-              inputText={inputText}
-              labelColor={text}
-              subtextColor={subtext}
-            />
+            <PasswordInput darkMode={darkMode} />
 
             {/* Checkbox */}
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 2 }}>
+            <div className="flex items-start gap-2 mt-1">
               <input
                 type="checkbox"
                 id="terms"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
-                style={{ marginTop: 2, accentColor: "#3b82f6", cursor: "pointer" }}
+                className="mt-0.5 accent-blue-500 cursor-pointer"
               />
-              <label htmlFor="terms" style={{ fontSize: 13, color: subtext, cursor: "pointer", lineHeight: 1.5 }}>
+              <label htmlFor="terms" className={`text-xs cursor-pointer leading-relaxed ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
                 I agree to the{" "}
-                <a href="#" style={{ color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>
+                <a href="#" className="text-blue-500 hover:underline font-medium">
                   Terms of Service and Privacy Policy
                 </a>
                 .
@@ -184,44 +122,27 @@ export default function ChronoraSignup() {
             {/* Submit */}
             <button
               disabled={!agreed}
-              style={{
-                width: "100%",
-                padding: "12px",
-                borderRadius: 10,
-                border: "none",
-                background: agreed ? "#3b82f6" : "#ccc",
-                color: "white",
-                fontSize: 15,
-                fontWeight: 700,
-                cursor: agreed ? "pointer" : "not-allowed",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                transition: "opacity 0.2s, transform 0.1s",
-                letterSpacing: "-0.01em",
-                marginTop: 4,
-              }}
-              onMouseEnter={(e) => { if (agreed) e.currentTarget.style.opacity = "0.92"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-              onMouseDown={(e) => { if (agreed) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+              className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1
+                ${agreed
+                  ? "bg-blue-500 hover:bg-blue-600 active:scale-[0.98] cursor-pointer"
+                  : "bg-gray-300 cursor-not-allowed"
+                }`}
             >
               Create account →
             </button>
           </div>
 
           {/* Sign in */}
-          <p style={{ textAlign: "center", marginTop: 20, marginBottom: 0, fontSize: 14, color: subtext }}>
+          <p className={`text-center text-sm mt-5 ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
             Already have an account?{" "}
-            <a href="#" style={{ color: "#3b82f6", textDecoration: "none", fontWeight: 600 }}>
+            <a href="#" className="text-blue-500 font-semibold hover:underline">
               Sign In
             </a>
           </p>
         </div>
       </div>
 
-      <Footer subtextColor={subtext} />
+      <Footer darkMode={darkMode} />
     </div>
   );
 }

@@ -4,28 +4,18 @@ import { useState } from "react";
 import FormInput from "./FormInput";
 
 interface PasswordInputProps {
-  inputBg: string;
-  inputBorder: string;
-  inputText: string;
-  labelColor: string;
-  subtextColor: string;
+  darkMode?: boolean;
 }
 
 function getSecurityLevel(pw: string) {
-  if (!pw) return { label: "EMPTY", color: "#aaa", width: "0%" };
-  if (pw.length < 6) return { label: "WEAK", color: "#ef4444", width: "25%" };
-  if (pw.length < 10) return { label: "FAIR", color: "#f59e0b", width: "50%" };
-  if (pw.length < 14) return { label: "GOOD", color: "#3b82f6", width: "75%" };
-  return { label: "STRONG", color: "#22c55e", width: "100%" };
+  if (!pw) return { label: "EMPTY", color: "text-gray-400", bar: "bg-gray-300", width: "w-0" };
+  if (pw.length < 6) return { label: "WEAK", color: "text-red-500", bar: "bg-red-500", width: "w-1/4" };
+  if (pw.length < 10) return { label: "FAIR", color: "text-amber-500", bar: "bg-amber-500", width: "w-1/2" };
+  if (pw.length < 14) return { label: "GOOD", color: "text-blue-500", bar: "bg-blue-500", width: "w-3/4" };
+  return { label: "STRONG", color: "text-green-500", bar: "bg-green-500", width: "w-full" };
 }
 
-export default function PasswordInput({
-  inputBg,
-  inputBorder,
-  inputText,
-  labelColor,
-  subtextColor,
-}: PasswordInputProps) {
+export default function PasswordInput({ darkMode = false }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
 
@@ -41,15 +31,7 @@ export default function PasswordInput({
     <button
       type="button"
       onClick={() => setShowPassword(!showPassword)}
-      style={{
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        color: subtextColor,
-        padding: 0,
-        display: "flex",
-        alignItems: "center",
-      }}
+      className={`flex items-center transition-colors ${darkMode ? "text-gray-500 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"}`}
     >
       {showPassword ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -76,32 +58,21 @@ export default function PasswordInput({
         onChange={(e) => setPassword(e.target.value)}
         icon={<LockIcon />}
         rightElement={<EyeToggle />}
-        inputBg={inputBg}
-        inputBorder={inputBorder}
-        inputText={inputText}
-        labelColor={labelColor}
+        darkMode={darkMode}
       />
 
       {/* Security bar */}
-      <div style={{ marginTop: 8 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-          <span style={{ fontSize: 11, color: subtextColor, letterSpacing: "0.06em", fontWeight: 600 }}>
-            SECURITY LEVEL
+      <div className="mt-2">
+        <div className="flex justify-between mb-1">
+          <span className={`text-[10px] font-semibold tracking-widest uppercase ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+            Security Level
           </span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: security.color, letterSpacing: "0.06em" }}>
+          <span className={`text-[10px] font-bold tracking-widest uppercase ${security.color}`}>
             {security.label}
           </span>
         </div>
-        <div style={{ height: 3, background: inputBorder, borderRadius: 99, overflow: "hidden" }}>
-          <div
-            style={{
-              height: "100%",
-              width: security.width,
-              background: security.color,
-              borderRadius: 99,
-              transition: "width 0.4s ease, background 0.4s ease",
-            }}
-          />
+        <div className={`h-1 rounded-full overflow-hidden ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`}>
+          <div className={`h-full rounded-full transition-all duration-500 ${security.bar} ${security.width}`} />
         </div>
       </div>
     </div>

@@ -10,11 +10,7 @@ interface FormInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   icon?: ReactNode;
   rightElement?: ReactNode;
-  inputBg: string;
-  inputBorder: string;
-  inputText: string;
-  labelColor: string;
-  extraStyle?: CSSProperties;
+  darkMode?: boolean;
 }
 
 export default function FormInput({
@@ -25,39 +21,16 @@ export default function FormInput({
   onChange,
   icon,
   rightElement,
-  inputBg,
-  inputBorder,
-  inputText,
-  labelColor,
-  extraStyle,
+  darkMode = false,
 }: FormInputProps) {
   return (
     <div>
-      <label
-        style={{
-          display: "block",
-          fontSize: 13,
-          fontWeight: 600,
-          color: labelColor,
-          marginBottom: 6,
-        }}
-      >
+      <label className={`block text-xs font-semibold mb-1.5 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
         {label}
       </label>
-      <div style={{ position: "relative" }}>
+      <div className="relative">
         {icon && (
-          <span
-            style={{
-              position: "absolute",
-              left: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#666",
-              fontSize: 14,
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+          <span className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
             {icon}
           </span>
         )}
@@ -66,33 +39,18 @@ export default function FormInput({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          style={{
-            width: "100%",
-            padding: `10px ${rightElement ? "40px" : "12px"} 10px ${icon ? "36px" : "12px"}`,
-            border: `1px solid ${inputBorder}`,
-            borderRadius: 10,
-            background: inputBg,
-            color: inputText,
-            fontSize: 14,
-            outline: "none",
-            boxSizing: "border-box",
-            transition: "border-color 0.2s",
-            ...extraStyle,
-          }}
-          onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-          onBlur={(e) => (e.target.style.borderColor = inputBorder)}
+          className={`w-full rounded-xl border text-sm outline-none transition-colors duration-200
+            focus:border-blue-500
+            ${icon ? "pl-9" : "pl-3"}
+            ${rightElement ? "pr-10" : "pr-3"}
+            py-2.5
+            ${darkMode
+              ? "bg-[#0f0f13] border-[#2a2a38] text-gray-100 placeholder-gray-600"
+              : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"
+            }`}
         />
         {rightElement && (
-          <span
-            style={{
-              position: "absolute",
-              right: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
             {rightElement}
           </span>
         )}

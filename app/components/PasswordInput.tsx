@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import FormInput from "./FormInput";
+import { useTheme } from "../providers/ThemeProvider";
 
 interface PasswordInputProps {
-  darkMode?: boolean;
+  hideLabel?: boolean;
+  hideSecurityBar?: boolean;
 }
 
 function getSecurityLevel(pw: string) {
@@ -15,7 +17,8 @@ function getSecurityLevel(pw: string) {
   return { label: "STRONG", color: "text-green-500", bar: "bg-green-500", width: "w-full" };
 }
 
-export default function PasswordInput({ darkMode = false }: PasswordInputProps) {
+export default function PasswordInput({ hideLabel = false, hideSecurityBar = false }: PasswordInputProps) {
+  const { darkMode } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
 
@@ -51,30 +54,30 @@ export default function PasswordInput({ darkMode = false }: PasswordInputProps) 
   return (
     <div>
       <FormInput
-        label="Password"
+        label={hideLabel ? "" : "Password"}
         type={showPassword ? "text" : "password"}
         placeholder="········"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         icon={<LockIcon />}
         rightElement={<EyeToggle />}
-        darkMode={darkMode}
       />
 
-      {/* Security bar */}
-      <div className="mt-2">
-        <div className="flex justify-between mb-1">
-          <span className={`text-[10px] font-semibold tracking-widest uppercase ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
-            Security Level
-          </span>
-          <span className={`text-[10px] font-bold tracking-widest uppercase ${security.color}`}>
-            {security.label}
-          </span>
+      {!hideSecurityBar && (
+        <div className="mt-2">
+          <div className="flex justify-between mb-1">
+            <span className={`text-[10px] font-semibold tracking-widest uppercase ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+              Security Level
+            </span>
+            <span className={`text-[10px] font-bold tracking-widest uppercase ${security.color}`}>
+              {security.label}
+            </span>
+          </div>
+          <div className={`h-1 rounded-full overflow-hidden ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`}>
+            <div className={`h-full rounded-full transition-all duration-500 ${security.bar} ${security.width}`} />
+          </div>
         </div>
-        <div className={`h-1 rounded-full overflow-hidden ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`}>
-          <div className={`h-full rounded-full transition-all duration-500 ${security.bar} ${security.width}`} />
-        </div>
-      </div>
+      )}
     </div>
   );
 }

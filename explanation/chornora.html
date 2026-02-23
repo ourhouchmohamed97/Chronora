@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronora — System Architecture</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #060811;
+  --bg2: #0c0f1a;
+  --surface: #0f1322;
+  --surface2: #141829;
+  --surface3: #1a2038;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --text: #dde3f0;
+  --text2: #8892a4;
+  --text3: #4f5768;
+  --blue: #3b82f6;
+  --indigo: #6366f1;
+  --violet: #8b5cf6;
+  --emerald: #10b981;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --cyan: #06b6d4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: #1e2438; border-radius: 3px; }
+
+/* HEADER */
+.header { display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:60px; background:rgba(6,8,17,0.92); border-bottom:1px solid var(--border2); position:sticky; top:0; z-index:200; backdrop-filter:blur(20px); }
+.logo-wrap { display:flex; align-items:center; gap:14px; }
+.logo-mark { width:34px; height:34px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); border-radius:9px; display:grid; place-items:center; font-size:16px; box-shadow:0 0 20px rgba(139,92,246,0.3); }
+.logo-name { font-size:18px; font-weight:700; letter-spacing:-0.3px; background:linear-gradient(90deg,#a5b4fc,#e2e8f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.logo-tag { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:1.5px; text-transform:uppercase; margin-top:1px; }
+.header-right { display:flex; align-items:center; gap:10px; }
+.hchip { font-family:'JetBrains Mono',monospace; font-size:10px; padding:4px 10px; border-radius:5px; border:1px solid; }
+.hchip-blue { border-color:rgba(59,130,246,0.3); color:var(--blue); background:rgba(59,130,246,0.07); }
+.hchip-green { border-color:rgba(16,185,129,0.3); color:var(--emerald); background:rgba(16,185,129,0.07); }
+.live-dot { display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--emerald); }
+.live-dot::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--emerald); box-shadow:0 0 8px var(--emerald); animation:blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* LEGEND */
+.legend-bar { display:flex; align-items:center; padding:0 40px; height:42px; background:var(--surface); border-bottom:1px solid var(--border); overflow-x:auto; gap:0; }
+.legend-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:2px; padding-right:20px; margin-right:8px; border-right:1px solid var(--border2); white-space:nowrap; }
+.leg-items { display:flex; align-items:center; gap:20px; padding-left:20px; }
+.leg-item { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text2); white-space:nowrap; }
+.leg-line { width:32px; height:14px; flex-shrink:0; }
+.leg-line svg { width:100%; height:100%; overflow:visible; }
+
+/* CANVAS */
+.canvas { padding:28px 40px 60px; max-width:1560px; margin:0 auto; }
+
+/* BAND */
+.band { border-radius:14px; border:1px solid var(--border); margin-bottom:0; overflow:hidden; }
+.band-label { display:flex; align-items:center; gap:10px; padding:10px 18px; border-bottom:1px solid var(--border); }
+.band-num { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:1px; }
+.band-title { font-size:11px; font-weight:600; letter-spacing:0.3px; flex:1; }
+.band-pill { font-family:'JetBrains Mono',monospace; font-size:9px; padding:2px 8px; border-radius:20px; border:1px solid; white-space:nowrap; }
+.band-body { padding:16px; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+
+.band-user   { background:linear-gradient(135deg,#0a0f22,#080d1c); border-color:rgba(59,130,246,0.18); }
+.band-user .band-label   { background:rgba(59,130,246,0.04); }
+.band-user .band-title   { color:#93b4fd; }
+.band-user .band-pill    { border-color:rgba(59,130,246,0.25); color:#93b4fd; }
+
+.band-front  { background:linear-gradient(135deg,#0b0d22,#090b1e); border-color:rgba(99,102,241,0.18); }
+.band-front .band-label  { background:rgba(99,102,241,0.04); }
+.band-front .band-title  { color:#a5a8fd; }
+.band-front .band-pill   { border-color:rgba(99,102,241,0.25); color:#a5a8fd; }
+
+.band-back   { background:linear-gradient(135deg,#060f14,#060e12); border-color:rgba(16,185,129,0.18); }
+.band-back .band-label   { background:rgba(16,185,129,0.04); }
+.band-back .band-title   { color:#6ee7b7; }
+.band-back .band-pill    { border-color:rgba(16,185,129,0.25); color:#6ee7b7; }
+
+.band-data   { background:linear-gradient(135deg,#0c0714,#090512); border-color:rgba(139,92,246,0.18); }
+.band-data .band-label   { background:rgba(139,92,246,0.04); }
+.band-data .band-title   { color:#c4b5fd; }
+.band-data .band-pill    { border-color:rgba(139,92,246,0.25); color:#c4b5fd; }
+
+.band-ext    { background:linear-gradient(135deg,#100a0a,#0d0709); border-color:rgba(245,158,11,0.18); }
+.band-ext .band-label    { background:rgba(245,158,11,0.04); }
+.band-ext .band-title    { color:#fcd34d; }
+.band-ext .band-pill     { border-color:rgba(245,158,11,0.25); color:#fcd34d; }
+
+/* NODE */
+.node { background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:13px 14px; flex:1; min-width:148px; max-width:210px; cursor:default; transition:border-color 0.2s,background 0.2s,transform 0.15s,box-shadow 0.2s; position:relative; overflow:hidden; }
+.node::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; opacity:0; transition:opacity 0.2s; }
+.node:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.35); }
+.node:hover::before { opacity:1; }
+.node.c-blue:hover   { border-color:rgba(59,130,246,0.4); background:rgba(59,130,246,0.06); } .node.c-blue::before { background:var(--blue); }
+.node.c-indigo:hover { border-color:rgba(99,102,241,0.4); background:rgba(99,102,241,0.06); } .node.c-indigo::before { background:var(--indigo); }
+.node.c-emerald:hover{ border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.06); } .node.c-emerald::before { background:var(--emerald); }
+.node.c-violet:hover { border-color:rgba(139,92,246,0.4); background:rgba(139,92,246,0.06); } .node.c-violet::before { background:var(--violet); }
+.node.c-amber:hover  { border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.06); } .node.c-amber::before { background:var(--amber); }
+.node.c-rose:hover   { border-color:rgba(244,63,94,0.4); background:rgba(244,63,94,0.06); } .node.c-rose::before { background:var(--rose); }
+.node.c-cyan:hover   { border-color:rgba(6,182,212,0.4); background:rgba(6,182,212,0.06); } .node.c-cyan::before { background:var(--cyan); }
+.node-wide { max-width:320px; flex:2; }
+.node-icon { font-size:18px; margin-bottom:7px; display:block; line-height:1; }
+.node-title { font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:4px; letter-spacing:-0.1px; }
+.node-desc { font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--text2); line-height:1.6; }
+.node-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+.nt { font-family:'JetBrains Mono',monospace; font-size:8.5px; padding:2px 6px; border-radius:3px; border:1px solid; white-space:nowrap; }
+.nt-blue    { border-color:rgba(59,130,246,0.3); color:#93b4fd; background:rgba(59,130,246,0.07); }
+.nt-indigo  { border-color:rgba(99,102,241,0.3); color:#a5a8fd; background:rgba(99,102,241,0.07); }
+.nt-violet  { border-color:rgba(139,92,246,0.3); color:#c4b5fd; background:rgba(139,92,246,0.07); }
+.nt-emerald { border-color:rgba(16,185,129,0.3); color:#6ee7b7; background:rgba(16,185,129,0.07); }
+.nt-amber   { border-color:rgba(245,158,11,0.3); color:#fcd34d; background:rgba(245,158,11,0.07); }
+.nt-rose    { border-color:rgba(244,63,94,0.3); color:#fda4af; background:rgba(244,63,94,0.07); }
+.nt-cyan    { border-color:rgba(6,182,212,0.3); color:#67e8f9; background:rgba(6,182,212,0.07); }
+
+/* FLOW PANEL */
+.flow-panel { background:rgba(10,13,26,0.8); border:1px solid var(--border2); border-radius:10px; padding:13px 14px; flex:1; min-width:200px; }
+.fp-title { font-family:'JetBrains Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--text3); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.fp-steps { display:flex; flex-direction:column; gap:2px; }
+.fp-step { display:flex; align-items:flex-start; gap:8px; padding:5px 0; }
+.fp-n { width:18px; height:18px; border-radius:50%; flex-shrink:0; display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:8px; font-weight:600; margin-top:1px; }
+.fp-n.c-emerald { background:rgba(16,185,129,0.15); color:var(--emerald); }
+.fp-n.c-violet  { background:rgba(139,92,246,0.15); color:var(--violet); }
+.fp-n.c-rose    { background:rgba(244,63,94,0.15); color:var(--rose); }
+.fp-text { font-size:11px; color:var(--text2); line-height:1.4; }
+.fp-text strong { color:var(--text); font-weight:500; }
+.fp-connector { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); padding-left:26px; margin:1px 0; }
+
+/* API GRID */
+.api-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; width:100%; }
+@media(max-width:1200px){.api-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:700px){.api-grid{grid-template-columns:repeat(2,1fr);}}
+.api-node { background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:11px 13px; transition:border-color 0.2s,transform 0.15s; }
+.api-node:hover { transform:translateY(-1px); }
+.api-method { font-family:'JetBrains Mono',monospace; font-size:8px; padding:1px 5px; border-radius:3px; margin-bottom:6px; display:inline-block; font-weight:600; }
+.m-get  { background:rgba(16,185,129,0.15); color:var(--emerald); }
+.m-post { background:rgba(59,130,246,0.15); color:var(--blue); }
+.m-crud { background:rgba(245,158,11,0.15); color:var(--amber); }
+.m-wh   { background:rgba(244,63,94,0.15); color:var(--rose); }
+.m-auth { background:rgba(99,102,241,0.15); color:var(--indigo); }
+.api-path { font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.api-desc { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text2); line-height:1.6; }
+
+/* BIZ GRID */
+.biz-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.biz-card { background:rgba(16,185,129,0.04); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:10px 12px; transition:border-color 0.2s; }
+.biz-card:hover { border-color:rgba(16,185,129,0.3); }
+.biz-name { font-size:11px; font-weight:600; color:#6ee7b7; margin-bottom:4px; }
+.biz-detail { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text2); line-height:1.7; }
+
+/* DB GRID */
+.db-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; flex:1; }
+@media(max-width:1100px){.db-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:700px){.db-grid{grid-template-columns:repeat(2,1fr);}}
+.dbt { background:var(--surface2); border:1px solid rgba(139,92,246,0.15); border-radius:9px; padding:11px 12px; transition:border-color 0.2s,transform 0.15s; }
+.dbt:hover { border-color:rgba(139,92,246,0.4); transform:translateY(-1px); }
+.dbt-name { font-size:11px; font-weight:600; color:#c4b5fd; margin-bottom:7px; }
+.dbt-fields { font-family:'JetBrains Mono',monospace; font-size:9px; line-height:1.9; }
+.dbt-pk { color:var(--amber); } .dbt-fk { color:var(--blue); } .dbt-col { color:var(--text2); }
+
+/* DB SIDE */
+.db-side { display:flex; flex-direction:column; gap:10px; min-width:170px; }
+.db-info { background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:11px 13px; }
+.db-info-title { font-size:11px; font-weight:600; margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+.db-info-list { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text2); line-height:2; }
+
+/* EXT CARD */
+.ext-card { background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:14px 16px; flex:1; min-width:200px; transition:border-color 0.2s,transform 0.15s; position:relative; overflow:hidden; }
+.ext-card::after { content:'EXTERNAL'; position:absolute; top:10px; right:12px; font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--text3); letter-spacing:1.5px; }
+.ext-card:hover { transform:translateY(-2px); }
+.ext-ai     { border-color:rgba(139,92,246,0.3); } .ext-ai:hover { border-color:rgba(139,92,246,0.55); box-shadow:0 8px 32px rgba(139,92,246,0.12); }
+.ext-google { border-color:rgba(59,130,246,0.3); } .ext-google:hover { border-color:rgba(59,130,246,0.55); box-shadow:0 8px 32px rgba(59,130,246,0.12); }
+.ext-stripe { border-color:rgba(244,63,94,0.3); } .ext-stripe:hover { border-color:rgba(244,63,94,0.55); box-shadow:0 8px 32px rgba(244,63,94,0.12); }
+.ext-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.ext-logo { width:32px; height:32px; border-radius:8px; display:grid; place-items:center; font-size:16px; flex-shrink:0; }
+.ext-logo-ai     { background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.2)); border:1px solid rgba(139,92,246,0.3); }
+.ext-logo-google { background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(99,102,241,0.2)); border:1px solid rgba(59,130,246,0.3); }
+.ext-logo-stripe { background:linear-gradient(135deg,rgba(244,63,94,0.2),rgba(245,158,11,0.2)); border:1px solid rgba(244,63,94,0.3); }
+.ext-name { font-size:13px; font-weight:600; color:var(--text); }
+.ext-sub  { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); margin-top:1px; }
+.ext-desc { font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--text2); line-height:1.6; margin-bottom:8px; }
+.ext-events { background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:6px; padding:7px 10px; font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); line-height:1.8; }
+.ext-events span { color:var(--text2); }
+
+/* INFRA */
+.infra-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:12px 16px; background:rgba(6,182,212,0.03); border-top:1px solid var(--border); }
+.infra-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:1.5px; padding-right:12px; margin-right:6px; border-right:1px solid var(--border2); }
+.infra-chip { display:flex; align-items:center; gap:5px; padding:3px 9px; border-radius:5px; background:rgba(6,182,212,0.07); border:1px solid rgba(6,182,212,0.15); font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--cyan); }
+
+/* SECURITY */
+.sec-ribbon { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:16px; background:linear-gradient(135deg,rgba(244,63,94,0.04),rgba(139,92,246,0.04)); border:1px solid rgba(244,63,94,0.14); border-radius:10px; padding:14px 18px; }
+.sec-title { font-family:'JetBrains Mono',monospace; font-size:9.5px; color:#fda4af; text-transform:uppercase; letter-spacing:1.5px; padding-right:14px; margin-right:6px; border-right:1px solid rgba(244,63,94,0.2); white-space:nowrap; }
+.sec-chip { padding:3px 9px; border-radius:5px; background:rgba(244,63,94,0.07); border:1px solid rgba(244,63,94,0.18); font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--text2); }
+
+/* BAND SECTION LABEL */
+.bsl { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:1.5px; padding:8px 0 6px; width:100%; }
+
+/* CONNECTOR */
+.conn-row { display:flex; justify-content:flex-start; flex-wrap:wrap; gap:28px; padding:6px 0 6px 60px; }
+.conn-item { display:flex; flex-direction:column; align-items:center; }
+.conn-chip { font-family:'JetBrains Mono',monospace; font-size:9.5px; padding:3px 12px; border-radius:12px; border:1px solid; white-space:nowrap; }
+.conn-stem { width:2px; height:16px; position:relative; }
+.conn-stem::after { content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid; }
+
+.ci-blue  .conn-chip  { border-color:rgba(59,130,246,0.28); color:#93b4fd; background:rgba(59,130,246,0.07); }
+.ci-blue  .conn-stem  { background:var(--blue); } .ci-blue .conn-stem::after { border-top-color:var(--blue); }
+.ci-green .conn-chip  { border-color:rgba(16,185,129,0.28); color:#6ee7b7; background:rgba(16,185,129,0.07); }
+.ci-green .conn-stem  { background:var(--emerald); } .ci-green .conn-stem::after { border-top-color:var(--emerald); }
+.ci-rose  .conn-chip  { border-color:rgba(244,63,94,0.28); color:#fda4af; background:rgba(244,63,94,0.07); }
+.ci-rose  .conn-stem  { background:none; border-left:2px dashed var(--rose); } .ci-rose .conn-stem::after { border-top-color:var(--rose); }
+.ci-violet.conn-chip  { border-color:rgba(139,92,246,0.28); color:#c4b5fd; background:rgba(139,92,246,0.07); }
+.ci-violet.conn-stem { background:var(--violet); } .ci-violet .conn-stem::after { border-top-color:var(--violet); }
+.ci-amber .conn-chip  { border-color:rgba(245,158,11,0.28); color:#fcd34d; background:rgba(245,158,11,0.07); }
+.ci-amber .conn-stem  { background:var(--amber); } .ci-amber .conn-stem::after { border-top-color:var(--amber); }
+
+/* RESPONSIVE */
+@media(max-width:900px) { .canvas{padding:20px;} .header{padding:0 20px;} .legend-bar{padding:0 20px;} }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-wrap">
+    <div class="logo-mark">⏱</div>
+    <div>
+      <div class="logo-name">Chronora</div>
+      <div class="logo-tag">System Architecture Diagram</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="live-dot">Production Grade</span>
+    <span class="hchip hchip-blue">v1.0</span>
+    <span class="hchip hchip-green">SaaS</span>
+  </div>
+</header>
+
+<div class="legend-bar">
+  <span class="legend-label">Legend</span>
+  <div class="leg-items">
+    <div class="leg-item">
+      <div class="leg-line"><svg><line x1="0" y1="7" x2="22" y2="7" stroke="#3b82f6" stroke-width="1.5"/><polygon points="22,3 28,7 22,11" fill="#3b82f6"/></svg></div>
+      Sync · HTTPS
+    </div>
+    <div class="leg-item">
+      <div class="leg-line"><svg><line x1="0" y1="7" x2="22" y2="7" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3"/><polygon points="22,3 28,7 22,11" fill="#f59e0b"/></svg></div>
+      Async · Background
+    </div>
+    <div class="leg-item">
+      <div class="leg-line"><svg><line x1="0" y1="7" x2="22" y2="7" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="2,2"/><polygon points="22,3 28,7 22,11" fill="#f43f5e"/></svg></div>
+      Webhook · Event Push
+    </div>
+    <div class="leg-item">
+      <div class="leg-line"><svg><line x1="0" y1="7" x2="22" y2="7" stroke="#10b981" stroke-width="1.5"/><polygon points="22,3 28,7 22,11" fill="#10b981"/></svg></div>
+      OAuth · Auth Flow
+    </div>
+    <div class="leg-item">
+      <div class="leg-line"><svg><line x1="0" y1="7" x2="22" y2="7" stroke="#8b5cf6" stroke-width="1.5"/><polygon points="22,3 28,7 22,11" fill="#8b5cf6"/></svg></div>
+      AI · Inference
+    </div>
+    <div class="leg-item" style="margin-left:8px;">
+      <div style="width:28px;height:14px;display:flex;align-items:center;">
+        <div style="width:28px;height:10px;border-radius:3px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);"></div>
+      </div>
+      External Service
+    </div>
+  </div>
+</div>
+
+<div class="canvas">
+
+  <!-- ══ 01 USER ══ -->
+  <div class="band band-user">
+    <div class="band-label">
+      <span class="band-num">01</span>
+      <span class="band-title">User Layer</span>
+      <span class="band-pill">Browser · Desktop · Mobile</span>
+    </div>
+    <div class="band-body">
+      <div class="node c-blue">
+        <span class="node-icon">🖥️</span>
+        <div class="node-title">Desktop Browser</div>
+        <div class="node-desc">Chrome / Firefox / Safari<br>Full sidebar navigation<br>Dashboard + Analytics</div>
+        <div class="node-tags">
+          <span class="nt nt-blue">HTTPS</span>
+          <span class="nt nt-blue">TLS 1.3</span>
+        </div>
+      </div>
+      <div class="node c-blue">
+        <span class="node-icon">📱</span>
+        <div class="node-title">Mobile Browser</div>
+        <div class="node-desc">Responsive Next.js UI<br>Bottom nav pattern<br>Touch-optimised</div>
+        <div class="node-tags">
+          <span class="nt nt-blue">PWA-ready</span>
+          <span class="nt nt-cyan">Responsive</span>
+        </div>
+      </div>
+      <div class="node node-wide c-blue">
+        <span class="node-icon">🎯</span>
+        <div class="node-title">User Interactions</div>
+        <div class="node-desc">Sign Up / Login (credentials or Google OAuth) · Create, update &amp; delete tasks · Trigger AI study plan · View analytics &amp; charts · Manage subscription plan · Toggle light/dark theme (client-side CSS vars)</div>
+        <div class="node-tags">
+          <span class="nt nt-amber">OAuth 2.0</span>
+          <span class="nt nt-emerald">JWT Session</span>
+          <span class="nt nt-violet">AI Trigger</span>
+          <span class="nt nt-rose">Stripe Checkout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONN 1→2 -->
+  <div class="conn-row">
+    <div class="conn-item ci-blue"><div class="conn-chip">HTTPS Requests</div><div class="conn-stem"></div></div>
+    <div class="conn-item ci-blue"><div class="conn-chip">UI State Updates via TanStack Query</div><div class="conn-stem"></div></div>
+  </div>
+
+  <!-- ══ 02 FRONTEND ══ -->
+  <div class="band band-front">
+    <div class="band-label">
+      <span class="band-num">02</span>
+      <span class="band-title">Frontend Layer</span>
+      <span class="band-pill">Next.js 14 App Router · React · TypeScript · TailwindCSS</span>
+    </div>
+    <div class="band-body">
+      <div class="node c-indigo">
+        <span class="node-icon">⚡</span>
+        <div class="node-title">Next.js App Router</div>
+        <div class="node-desc">RSC + Client Components<br>Server-side rendering<br>TailwindCSS · Dark/Light<br>via CSS custom props</div>
+        <div class="node-tags">
+          <span class="nt nt-indigo">App Router</span>
+          <span class="nt nt-cyan">TypeScript</span>
+        </div>
+      </div>
+      <div class="node c-indigo">
+        <span class="node-icon">🔄</span>
+        <div class="node-title">TanStack Query</div>
+        <div class="node-desc">useQuery → fetch tasks<br>useMutation → CRUD<br>Optimistic UI updates<br>Stale-while-revalidate</div>
+        <div class="node-tags">
+          <span class="nt nt-indigo">Cache</span>
+          <span class="nt nt-indigo">Revalidation</span>
+        </div>
+      </div>
+      <div class="node c-rose">
+        <span class="node-icon">🔐</span>
+        <div class="node-title">Route Middleware</div>
+        <div class="node-desc">Reads HTTP-only cookie<br>Redirects → /login<br>RBAC: free vs premium<br>Edge-compatible</div>
+        <div class="node-tags">
+          <span class="nt nt-rose">Protected Routes</span>
+          <span class="nt nt-amber">RBAC</span>
+        </div>
+      </div>
+      <div class="node c-indigo">
+        <span class="node-icon">🧭</span>
+        <div class="node-title">Client Routing</div>
+        <div class="node-desc">/dashboard · /tasks<br>/ai-planner<br>/analytics · /settings<br>/billing</div>
+        <div class="node-tags">
+          <span class="nt nt-indigo">Next.js Router</span>
+        </div>
+      </div>
+      <div class="node c-cyan">
+        <span class="node-icon">🎨</span>
+        <div class="node-title">UI Components</div>
+        <div class="node-desc">Task cards · Calendar<br>Study plan timeline<br>Analytics charts<br>Subscription status</div>
+        <div class="node-tags">
+          <span class="nt nt-cyan">shadcn/ui</span>
+          <span class="nt nt-cyan">Tailwind</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONN 2→3 -->
+  <div class="conn-row" style="gap:22px;">
+    <div class="conn-item ci-blue"><div class="conn-chip">REST API Calls</div><div class="conn-stem"></div></div>
+    <div class="conn-item ci-green"><div class="conn-chip">OAuth Credentials Flow</div><div class="conn-stem"></div></div>
+    <div class="conn-item ci-rose"><div class="conn-chip">Stripe Checkout Redirect</div><div class="conn-stem"></div></div>
+    <div class="conn-item ci-amber"><div class="conn-chip">Server Actions (mutations)</div><div class="conn-stem"></div></div>
+  </div>
+
+  <!-- ══ 03 BACKEND ══ -->
+  <div class="band band-back">
+    <div class="band-label">
+      <span class="band-num">03</span>
+      <span class="band-title">Backend API Layer</span>
+      <span class="band-pill">Next.js API Routes + Server Actions + Prisma ORM</span>
+    </div>
+    <div class="band-body" style="flex-direction:column;gap:14px;">
+
+      <div class="bsl">📡 API Routes</div>
+      <div class="api-grid">
+        <div class="api-node" style="border-color:rgba(245,158,11,0.2);">
+          <span class="api-method m-crud">CRUD</span>
+          <div class="api-path">/api/tasks</div>
+          <div class="api-desc">GET list · POST create<br>PUT update · DELETE<br>Zod validation · Auth guard<br>Prisma query</div>
+        </div>
+        <div class="api-node" style="border-color:rgba(139,92,246,0.25);">
+          <span class="api-method m-post">POST</span>
+          <div class="api-path">/api/ai/generate-plan</div>
+          <div class="api-desc">Premium gate · Rate limited<br>Format → OpenAI prompt<br>Validate JSON response<br>Persist plan to DB</div>
+        </div>
+        <div class="api-node" style="border-color:rgba(16,185,129,0.2);">
+          <span class="api-method m-get">GET</span>
+          <div class="api-path">/api/analytics</div>
+          <div class="api-desc">Weekly study hours<br>Completion rate<br>Overdue ratio calc<br>Aggregated snapshots</div>
+        </div>
+        <div class="api-node" style="border-color:rgba(244,63,94,0.25);">
+          <span class="api-method m-wh">WEBHOOK</span>
+          <div class="api-path">/api/stripe/webhook</div>
+          <div class="api-desc">Stripe-Signature verify<br>subscription.created<br>payment_failed handler<br>Updates DB async</div>
+        </div>
+        <div class="api-node" style="border-color:rgba(99,102,241,0.25);">
+          <span class="api-method m-auth">AUTH</span>
+          <div class="api-path">/api/auth/[...nextauth]</div>
+          <div class="api-desc">Credentials provider<br>Google OAuth callback<br>JWT sign + set cookie<br>Session management</div>
+        </div>
+      </div>
+
+      <div class="bsl">⚙️ Business Logic · Auth Flow · AI Plan Flow · Stripe Billing Flow</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+
+        <div class="flow-panel" style="flex:2;min-width:280px;">
+          <div class="fp-title">⚙️ Business Logic Engine</div>
+          <div class="biz-grid">
+            <div class="biz-card">
+              <div class="biz-name">📊 Task Scoring</div>
+              <div class="biz-detail">Priority weight (1–5) · Deadline proximity factor · Estimated duration · Subject load</div>
+            </div>
+            <div class="biz-card">
+              <div class="biz-name">⏰ Urgency Calc</div>
+              <div class="biz-detail">Days until deadline · Overdue detection · Escalation logic · Buffer time</div>
+            </div>
+            <div class="biz-card">
+              <div class="biz-name">⚖️ Workload Balance</div>
+              <div class="biz-detail">Daily hour cap · Subject distribution · Fatigue model · Rest day injection</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-panel" style="flex:1;min-width:200px;">
+          <div class="fp-title" style="color:#6ee7b7;">🔐 Auth Flow</div>
+          <div class="fp-steps">
+            <div class="fp-step"><div class="fp-n c-emerald">1</div><div class="fp-text">User submits <strong>credentials / Google</strong></div></div>
+            <div class="fp-connector">↓ NextAuth validates provider</div>
+            <div class="fp-step"><div class="fp-n c-emerald">2</div><div class="fp-text">Prisma <strong>DB lookup</strong> → bcrypt compare</div></div>
+            <div class="fp-connector">↓ JWT signed (HS256)</div>
+            <div class="fp-step"><div class="fp-n c-emerald">3</div><div class="fp-text"><strong>HTTP-only cookie</strong> + CSRF token</div></div>
+            <div class="fp-connector">↓ Middleware validates</div>
+            <div class="fp-step"><div class="fp-n c-emerald">4</div><div class="fp-text"><strong>Access granted</strong> to dashboard</div></div>
+          </div>
+        </div>
+
+        <div class="flow-panel" style="flex:1;min-width:200px;">
+          <div class="fp-title" style="color:#c4b5fd;">🤖 AI Plan Flow</div>
+          <div class="fp-steps">
+            <div class="fp-step"><div class="fp-n c-violet">1</div><div class="fp-text">Frontend sends <strong>tasks + constraints</strong></div></div>
+            <div class="fp-connector">↓ Server formats prompt</div>
+            <div class="fp-step"><div class="fp-n c-violet">2</div><div class="fp-text">Call <strong>OpenAI GPT-4</strong> (temp 0.3)</div></div>
+            <div class="fp-connector">↓ Receive JSON schedule</div>
+            <div class="fp-step"><div class="fp-n c-violet">3</div><div class="fp-text">Validate response with <strong>Zod</strong></div></div>
+            <div class="fp-connector">↓ Persist StudyPlan to DB</div>
+            <div class="fp-step"><div class="fp-n c-violet">4</div><div class="fp-text"><strong>Return plan</strong> → cache update</div></div>
+          </div>
+        </div>
+
+        <div class="flow-panel" style="flex:1;min-width:200px;">
+          <div class="fp-title" style="color:#fda4af;">💳 Stripe Billing Flow</div>
+          <div class="fp-steps">
+            <div class="fp-step"><div class="fp-n c-rose">1</div><div class="fp-text">User clicks <strong>Upgrade Plan</strong></div></div>
+            <div class="fp-connector">↓ Redirect Stripe Checkout</div>
+            <div class="fp-step"><div class="fp-n c-rose">2</div><div class="fp-text">Stripe fires <strong>webhook event</strong></div></div>
+            <div class="fp-connector">↓ /api/stripe/webhook</div>
+            <div class="fp-step"><div class="fp-n c-rose">3</div><div class="fp-text">Verify signature → <strong>update DB</strong></div></div>
+            <div class="fp-connector">↓ Role elevated</div>
+            <div class="fp-step"><div class="fp-n c-rose">4</div><div class="fp-text"><strong>AI features unlocked</strong></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CONN 3→4 -->
+  <div class="conn-row" style="justify-content:center;padding-left:0;">
+    <div class="conn-item ci-violet"><div class="conn-chip">Prisma ORM · Type-safe SQL Queries</div><div class="conn-stem"></div></div>
+  </div>
+
+  <!-- ══ 04 DATA ══ -->
+  <div class="band band-data">
+    <div class="band-label">
+      <span class="band-num">04</span>
+      <span class="band-title">Data Layer</span>
+      <span class="band-pill">PostgreSQL · Supabase / Neon · Prisma ORM</span>
+    </div>
+    <div class="band-body" style="align-items:stretch;">
+      <div class="db-grid">
+        <div class="dbt">
+          <div class="dbt-name">👤 Users</div>
+          <div class="dbt-fields">
+            <div class="dbt-pk">id (PK · uuid)</div>
+            <div class="dbt-col">email (unique)</div>
+            <div class="dbt-col">name · passwordHash</div>
+            <div class="dbt-col">role: free|premium</div>
+            <div class="dbt-col">oauthProvider</div>
+            <div class="dbt-col">createdAt · updatedAt</div>
+          </div>
+        </div>
+        <div class="dbt">
+          <div class="dbt-name">✅ Tasks</div>
+          <div class="dbt-fields">
+            <div class="dbt-pk">id (PK · uuid)</div>
+            <div class="dbt-fk">userId (FK → Users)</div>
+            <div class="dbt-fk">subjectId (FK → Subjects)</div>
+            <div class="dbt-col">title · priority (1–5)</div>
+            <div class="dbt-col">deadline · duration</div>
+            <div class="dbt-col">status · score</div>
+          </div>
+        </div>
+        <div class="dbt">
+          <div class="dbt-name">🗓️ StudyPlans</div>
+          <div class="dbt-fields">
+            <div class="dbt-pk">id (PK · uuid)</div>
+            <div class="dbt-fk">userId (FK → Users)</div>
+            <div class="dbt-col">planJSON (JSONB)</div>
+            <div class="dbt-col">generatedAt</div>
+            <div class="dbt-col">aiModel · tokens</div>
+            <div class="dbt-col">status: active|archived</div>
+          </div>
+        </div>
+        <div class="dbt">
+          <div class="dbt-name">📚 Subjects</div>
+          <div class="dbt-fields">
+            <div class="dbt-pk">id (PK · uuid)</div>
+            <div class="dbt-fk">userId (FK → Users)</div>
+            <div class="dbt-col">name · color</div>
+            <div class="dbt-col">weeklyGoalHrs</div>
+            <div class="dbt-col">totalHrsLogged</div>
+            <div class="dbt-col">createdAt</div>
+          </div>
+        </div>
+        <div class="dbt">
+          <div class="dbt-name">📈 AnalyticsSnapshots</div>
+          <div class="dbt-fields">
+            <div class="dbt-pk">id (PK · uuid)</div>
+            <div class="dbt-fk">userId (FK → Users)</div>
+            <div class="dbt-col">weekStart (date)</div>
+            <div class="dbt-col">studyHours · tasksDone</div>
+            <div class="dbt-col">completionRate</div>
+            <div class="dbt-col">overdueRatio</div>
+          </div>
+        </div>
+        <div class="dbt">
+          <div class="dbt-name">💳 Subscriptions</div>
+          <div class="dbt-fields">
+            <div class="dbt-pk">id (PK · uuid)</div>
+            <div class="dbt-fk">userId (FK → Users, 1:1)</div>
+            <div class="dbt-col">stripeCustomerId</div>
+            <div class="dbt-col">stripeSubId</div>
+            <div class="dbt-col">status: active|canceled</div>
+            <div class="dbt-col">currentPeriodEnd</div>
+          </div>
+        </div>
+      </div>
+      <div class="db-side">
+        <div class="db-info">
+          <div class="db-info-title" style="color:#c4b5fd;">🔗 Relationships</div>
+          <div class="db-info-list">
+            User → Tasks (1:N)<br>
+            User → StudyPlans (1:N)<br>
+            User → Subjects (1:N)<br>
+            User → Subscription (1:1)<br>
+            Subject → Tasks (1:N)<br>
+            User → Analytics (1:N)
+          </div>
+        </div>
+        <div class="db-info">
+          <div class="db-info-title" style="color:#6ee7b7;">🐘 Prisma</div>
+          <div class="db-info-list">
+            Type-safe queries<br>
+            Auto migrations<br>
+            Connection pooling<br>
+            Row-level security<br>
+            Relation includes
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONN 4→5 -->
+  <div class="conn-row" style="justify-content:center;padding-left:0;gap:40px;">
+    <div class="conn-item ci-violet"><div class="conn-chip">↕ OpenAI HTTPS</div><div class="conn-stem"></div></div>
+    <div class="conn-item ci-blue"><div class="conn-chip">↕ Google OAuth 2.0</div><div class="conn-stem"></div></div>
+    <div class="conn-item ci-rose"><div class="conn-chip">⟵ Stripe Webhook · Async</div><div class="conn-stem"></div></div>
+  </div>
+
+  <!-- ══ 05 EXTERNAL ══ -->
+  <div class="band band-ext">
+    <div class="band-label">
+      <span class="band-num">05</span>
+      <span class="band-title">External Services &amp; APIs</span>
+      <span class="band-pill">Third-party Integrations</span>
+    </div>
+    <div class="band-body">
+
+      <div class="ext-card ext-ai">
+        <div class="ext-header">
+          <div class="ext-logo ext-logo-ai">🧠</div>
+          <div>
+            <div class="ext-name">OpenAI API</div>
+            <div class="ext-sub">GPT-4 · AI Inference</div>
+          </div>
+        </div>
+        <div class="ext-desc">Generates structured JSON study schedules from task data and constraints. Called server-side only — never exposed to the browser.</div>
+        <div class="ext-events">
+          <span>endpoint</span>: POST /v1/chat/completions<br>
+          <span>model</span>: gpt-4-turbo-preview<br>
+          <span>temperature</span>: 0.3 &nbsp;·&nbsp; <span>max_tokens</span>: 2048<br>
+          <span>response_format</span>: Structured JSON
+        </div>
+        <div class="node-tags" style="margin-top:10px;">
+          <span class="nt nt-violet">Premium Only</span>
+          <span class="nt nt-amber">Rate Limited</span>
+          <span class="nt nt-violet">Zod Validated</span>
+        </div>
+      </div>
+
+      <div class="ext-card ext-google">
+        <div class="ext-header">
+          <div class="ext-logo ext-logo-google">🔵</div>
+          <div>
+            <div class="ext-name">Google OAuth 2.0</div>
+            <div class="ext-sub">Identity Provider · OpenID Connect</div>
+          </div>
+        </div>
+        <div class="ext-desc">Social login via NextAuth Google provider. Returns profile on callback; NextAuth auto-upserts user to the Users table.</div>
+        <div class="ext-events">
+          <span>callback</span>: /api/auth/callback/google<br>
+          <span>scopes</span>: openid email profile<br>
+          <span>on success</span>: upsert User → create session
+        </div>
+        <div class="node-tags" style="margin-top:10px;">
+          <span class="nt nt-blue">OAuth 2.0</span>
+          <span class="nt nt-emerald">OpenID Connect</span>
+        </div>
+      </div>
+
+      <div class="ext-card ext-stripe">
+        <div class="ext-header">
+          <div class="ext-logo ext-logo-stripe">💳</div>
+          <div>
+            <div class="ext-name">Stripe</div>
+            <div class="ext-sub">Billing · Subscriptions · Webhooks</div>
+          </div>
+        </div>
+        <div class="ext-desc">Handles full subscription lifecycle. Checkout pages are Stripe-hosted. Billing events fire webhooks back asynchronously to update the app DB.</div>
+        <div class="ext-events">
+          <span>checkout.session.completed</span><br>
+          <span>customer.subscription.updated</span><br>
+          <span>customer.subscription.deleted</span><br>
+          <span>invoice.payment_failed</span>
+        </div>
+        <div class="node-tags" style="margin-top:10px;">
+          <span class="nt nt-rose">Async Webhooks</span>
+          <span class="nt nt-amber">Sig Verify</span>
+          <span class="nt nt-rose">Idempotent</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="infra-row">
+      <span class="infra-label">Infrastructure</span>
+      <div class="infra-chip">▲ Vercel Hosting</div>
+      <div class="infra-chip">⚡ Edge Functions</div>
+      <div class="infra-chip">🌐 Global CDN</div>
+      <div class="infra-chip">🐘 Neon / Supabase PostgreSQL</div>
+      <div class="infra-chip">⏳ Serverless Background Jobs</div>
+      <div class="infra-chip">🔒 TLS 1.3 Everywhere</div>
+      <div class="infra-chip">🔑 Env Secrets via Vercel</div>
+    </div>
+  </div>
+
+  <!-- SECURITY -->
+  <div class="sec-ribbon">
+    <span class="sec-title">🛡️ Security Layer</span>
+    <span class="sec-chip">HTTPS Everywhere</span>
+    <span class="sec-chip">HTTP-only Cookies</span>
+    <span class="sec-chip">JWT HS256</span>
+    <span class="sec-chip">Rate Limiting (AI endpoint)</span>
+    <span class="sec-chip">Zod Input Validation</span>
+    <span class="sec-chip">RBAC — free / premium</span>
+    <span class="sec-chip">CSRF via NextAuth</span>
+    <span class="sec-chip">Stripe Sig Verification</span>
+    <span class="sec-chip">bcrypt Password Hash</span>
+    <span class="sec-chip">Row-Level Security (RLS)</span>
+    <span class="sec-chip">SQL Injection Guard via Prisma</span>
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:24px 40px;border-top:1px solid var(--border);margin-top:4px;">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;">
+    Chronora &nbsp;·&nbsp; AI-Assisted Study Planner &nbsp;·&nbsp; System Architecture v1.0 &nbsp;·&nbsp; Next.js · Prisma · PostgreSQL · OpenAI · Stripe
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TanStack & Prisma — Visual Explanation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background-color: #fdf8f0;
+      background-image:
+        radial-gradient(circle at 20% 20%, #fff7ed 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, #f0fdf4 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40 L40 0' stroke='%23e7e5e4' stroke-width='0.5'/%3E%3C/svg%3E");
+      font-family: 'Caveat', 'Comic Sans MS', cursive;
+      padding: 24px 16px;
+      color: #292524;
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-shadow: 3px 3px 0 #e7e5e4;
+    }
+    .header p { font-size: 18px; color: #78716c; margin-top: 4px; }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+    .tab-btn {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 2px solid #d6d3d1;
+      background: white;
+      color: #78716c;
+      cursor: pointer;
+      text-transform: capitalize;
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      border-color: #292524;
+      background: #292524;
+      color: white;
+      transform: rotate(-1deg);
+    }
+    .tab-btn:hover:not(.active) { border-color: #a8a29e; color: #292524; }
+
+    /* ── Panels ── */
+    .panel { display: none; max-width: 860px; margin: 0 auto; }
+    .panel.active { display: block; }
+
+    /* ── Shared boxes ── */
+    .card {
+      background: white;
+      border: 2px solid #e7e5e4;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 6px 6px 0 #e7e5e4;
+      margin-bottom: 24px;
+    }
+    .card-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+
+    .sketch-label {
+      font-size: 13px;
+      color: #78716c;
+      background: #fef9f0;
+      border: 1.5px dashed #d6d3d1;
+      border-radius: 8px;
+      padding: 4px 10px;
+      display: inline-block;
+      transform: rotate(0.5deg);
+      margin-bottom: 4px;
+    }
+
+    .section-box {
+      border-radius: 18px;
+      padding: 20px;
+      flex: 1;
+      min-width: 300px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: inline-block;
+      padding-bottom: 4px;
+      transform: rotate(-1deg);
+    }
+
+    .info-box {
+      border-radius: 12px;
+      padding: 12px 16px;
+      transform: rotate(-0.3deg);
+      margin-bottom: 8px;
+    }
+    .info-box-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .info-box-title { font-size: 18px; font-weight: 700; }
+    .info-box ul { padding-left: 20px; }
+    .info-box li { font-size: 15px; margin-bottom: 3px; }
+
+    .flex-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+    .flex-col { display: flex; flex-direction: column; gap: 16px; flex: 1; min-width: 260px; }
+
+    /* ── Code blocks ── */
+    pre {
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ── Mental model banner ── */
+    .mental-model {
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Stack layers (Overview) ── */
+    .stack-layer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 4px;
+    }
+    .stack-layer-label { font-size: 18px; font-weight: 700; }
+    .stack-layer-desc { font-size: 15px; color: #6b7280; }
+    .stack-arrow { text-align: center; font-size: 18px; color: #a8a29e; line-height: 1; margin: 2px 0 6px; }
+
+    /* ── Summary cards (Overview bottom) ── */
+    .summary-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+    .summary-card { flex: 1; min-width: 240px; border-radius: 14px; padding: 16px; }
+    .summary-card-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .summary-card-body { font-size: 17px; line-height: 1.5; }
+
+    /* ── Together flow ── */
+    .flow-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .flow-box { flex: 1; border-radius: 10px; padding: 8px 14px; }
+    .flow-box span { font-size: 16px; font-weight: 600; }
+    .flow-side {
+      font-size: 12px;
+      color: #78716c;
+      background: #fef9f0;
+      border: 1.5px dashed #d6d3d1;
+      border-radius: 8px;
+      padding: 4px 10px;
+      min-width: 70px;
+      text-align: center;
+      transform: rotate(0.5deg);
+    }
+    .flow-arrow { text-align: center; font-size: 18px; color: #a8a29e; line-height: 0.9; }
+
+    /* ── Together insight cards ── */
+    .insight-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+    .insight-card { flex: 1; min-width: 220px; border-radius: 14px; padding: 16px; }
+    .insight-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .insight-body { font-size: 15px; line-height: 1.5; }
+
+    /* ── TanStack Query feature labels ── */
+    .feature-labels { display: flex; flex-direction: column; gap: 6px; }
+
+    /* ── Prisma comparison ── */
+    .compare-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .compare-box { flex: 1; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; }
+
+    /* ── Footer ── */
+    footer { text-align: center; margin-top: 32px; font-size: 13px; color: #a8a29e; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🗺️ TanStack &amp; Prisma</h1>
+    <p>— a visual explanation —</p>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="overview">overview</button>
+      <button class="tab-btn" data-tab="tanstack">tanstack</button>
+      <button class="tab-btn" data-tab="prisma">prisma</button>
+      <button class="tab-btn" data-tab="together">together</button>
+    </div>
+  </div>
+
+  <!-- ══════════ OVERVIEW ══════════ -->
+  <div id="overview" class="panel active">
+    <div class="card">
+      <div class="card-title">Where do they live in your stack?</div>
+
+      <div class="stack-layer" style="background:#dbeafe; border:2.5px solid #3b82f6; box-shadow:3px 3px 0 #3b82f620;">
+        <span class="stack-layer-label">🖥️ Browser / UI</span>
+        <span class="stack-layer-desc">React components, user interactions</span>
+      </div>
+      <div class="stack-arrow">↕</div>
+
+      <div class="stack-layer" style="background:#fff7ed; border:2.5px solid #f97316; box-shadow:3px 3px 0 #f9731620;">
+        <span class="stack-layer-label">⚡ TanStack</span>
+        <span class="stack-layer-desc">Query, Router, Form, Table — frontend superpowers</span>
+      </div>
+      <div class="stack-arrow">↕</div>
+
+      <div class="stack-layer" style="background:#f5f3ff; border:2.5px solid #8b5cf6; box-shadow:3px 3px 0 #8b5cf620;">
+        <span class="stack-layer-label">🌐 API / Server</span>
+        <span class="stack-layer-desc">REST, GraphQL, tRPC endpoints</span>
+      </div>
+      <div class="stack-arrow">↕</div>
+
+      <div class="stack-layer" style="background:#f0fdf4; border:2.5px solid #22c55e; box-shadow:3px 3px 0 #22c55e20;">
+        <span class="stack-layer-label">🔷 Prisma</span>
+        <span class="stack-layer-desc">Type-safe ORM — connects server to database</span>
+      </div>
+      <div class="stack-arrow">↕</div>
+
+      <div class="stack-layer" style="background:#fef9c3; border:2.5px solid #eab308; box-shadow:3px 3px 0 #eab30820;">
+        <span class="stack-layer-label">🗄️ Database</span>
+        <span class="stack-layer-desc">PostgreSQL, MySQL, SQLite, MongoDB…</span>
+      </div>
+    </div>
+
+    <div class="summary-cards">
+      <div class="summary-card" style="background:#fff7ed; border:2.5px solid #f97316; box-shadow:4px 4px 0 #f9731630;">
+        <div class="summary-card-title" style="color:#ea580c;">🔥 TanStack in one sentence</div>
+        <div class="summary-card-body" style="color:#7c2d12;">
+          A family of headless, framework-agnostic libraries that supercharge your <strong>frontend</strong> — async state, routing, tables, forms.
+        </div>
+      </div>
+      <div class="summary-card" style="background:#f0fdf4; border:2.5px solid #22c55e; box-shadow:4px 4px 0 #22c55e30;">
+        <div class="summary-card-title" style="color:#16a34a;">🔷 Prisma in one sentence</div>
+        <div class="summary-card-body" style="color:#14532d;">
+          A next-gen <strong>ORM</strong> that lets you talk to your database with fully type-safe, auto-completed queries — no raw SQL needed.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ TANSTACK ══════════ -->
+  <div id="tanstack" class="panel">
+    <div class="flex-row">
+
+      <!-- TanStack Query section -->
+      <div class="section-box" style="background:#fff7ed; border:3px solid #f97316; box-shadow:6px 6px 0 #f9731630;">
+        <div class="section-title" style="color:#ea580c; border-bottom:3px solid #f97316;">TanStack Query 🔄</div>
+        <div style="font-size:15px; color:#92400e; margin-bottom:12px;">
+          Async state management for server data. Caching, refetching, pagination — all handled.
+        </div>
+        <pre style="background:#fef3c7; border:1.5px solid #f59e0b; color:#78350f;">const { data, isLoading } = useQuery({
+  queryKey: ['users'],
+  queryFn: () => fetch('/api/users')
+})</pre>
+        <div class="feature-labels">
+          <span class="sketch-label">🔁 Auto re-fetching on focus/reconnect</span>
+          <span class="sketch-label">📦 Smart background caching</span>
+          <span class="sketch-label">🔄 Optimistic updates</span>
+          <span class="sketch-label">📄 Infinite scroll / pagination</span>
+          <span class="sketch-label">⏳ Loading &amp; error states built-in</span>
+        </div>
+      </div>
+
+      <!-- Right column boxes -->
+      <div class="flex-col">
+        <div class="info-box" style="background:#fff7ed; border:2.5px solid #f97316; box-shadow:4px 4px 0 #f9731640;">
+          <div class="info-box-header">
+            <span style="font-size:20px;">🗺️</span>
+            <span class="info-box-title" style="color:#ea580c;">TanStack Router</span>
+          </div>
+          <ul style="color:#7c2d12;">
+            <li>Type-safe routing (TS-first)</li>
+            <li>File-based routes</li>
+            <li>Nested layouts</li>
+            <li>Search param management</li>
+            <li>Loaders &amp; code splitting</li>
+          </ul>
+        </div>
+
+        <div class="info-box" style="background:#fff7ed; border:2.5px solid #f97316; box-shadow:4px 4px 0 #f9731640;">
+          <div class="info-box-header">
+            <span style="font-size:20px;">📊</span>
+            <span class="info-box-title" style="color:#ea580c;">TanStack Table</span>
+          </div>
+          <ul style="color:#7c2d12;">
+            <li>Headless — bring your own UI</li>
+            <li>Sorting, filtering, pagination</li>
+            <li>Virtual scrolling (thousands of rows)</li>
+            <li>Column resizing &amp; grouping</li>
+          </ul>
+        </div>
+
+        <div class="info-box" style="background:#fff7ed; border:2.5px solid #f97316; box-shadow:4px 4px 0 #f9731640;">
+          <div class="info-box-header">
+            <span style="font-size:20px;">📝</span>
+            <span class="info-box-title" style="color:#ea580c;">TanStack Form</span>
+          </div>
+          <ul style="color:#7c2d12;">
+            <li>Framework-agnostic</li>
+            <li>Type-safe field validation</li>
+            <li>Async validation support</li>
+            <li>Fine-grained reactivity</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mental-model" style="background:white; border:2px dashed #f97316; color:#7c2d12;">
+      💡 <strong>Mental model:</strong> Think of TanStack as LEGO for the frontend. Each piece (Query, Router, Table, Form) solves a hard problem. They're <em>headless</em> — you control 100% of the UI.
+    </div>
+  </div>
+
+  <!-- ══════════ PRISMA ══════════ -->
+  <div id="prisma" class="panel">
+    <div class="flex-row">
+
+      <!-- Prisma Schema section -->
+      <div class="section-box" style="background:#f0fdf4; border:3px solid #22c55e; box-shadow:6px 6px 0 #22c55e30;">
+        <div class="section-title" style="color:#16a34a; border-bottom:3px solid #22c55e; transform:rotate(1deg);">Prisma Schema 📐</div>
+        <div style="font-size:15px; color:#166534; margin-bottom:12px;">
+          Define your data model once in schema.prisma. Prisma generates the database tables AND TypeScript types.
+        </div>
+        <pre style="background:#dcfce7; border:1.5px solid #22c55e; color:#14532d;">model User {
+  id    Int     @id @default(autoincrement())
+  name  String
+  email String  @unique
+  posts Post[]
+}
+
+model Post {
+  id     Int    @id
+  title  String
+  author User   @relation(...)
+}</pre>
+        <span class="sketch-label">✨ One schema → DB tables + TS types + migrations</span>
+      </div>
+
+      <!-- Right column -->
+      <div class="flex-col">
+        <div class="info-box" style="background:#f0fdf4; border:2.5px solid #22c55e; box-shadow:4px 4px 0 #22c55e40;">
+          <div class="info-box-header">
+            <span style="font-size:20px;">💻</span>
+            <span class="info-box-title" style="color:#16a34a;">Prisma Client</span>
+          </div>
+          <ul style="color:#14532d;">
+            <li>Auto-generated, type-safe queries</li>
+            <li>Fully auto-completed in your IDE</li>
+            <li>find, create, update, delete, upsert</li>
+            <li>Nested reads &amp; writes</li>
+            <li>Transactions support</li>
+          </ul>
+        </div>
+
+        <div class="info-box" style="background:#f0fdf4; border:2.5px solid #22c55e; box-shadow:4px 4px 0 #22c55e40;">
+          <div class="info-box-header">
+            <span style="font-size:20px;">🔀</span>
+            <span class="info-box-title" style="color:#16a34a;">Prisma Migrate</span>
+          </div>
+          <ul style="color:#14532d;">
+            <li>Schema changes → SQL migrations</li>
+            <li>Version control for your DB</li>
+            <li>'prisma migrate dev' for local dev</li>
+            <li>'prisma migrate deploy' for production</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Query comparison -->
+    <div style="background:#f0fdf4; border:2.5px solid #22c55e; border-radius:14px; padding:16px; margin-bottom:16px;">
+      <div style="font-size:18px; font-weight:700; color:#16a34a; margin-bottom:8px;">Type-safe query example 🎯</div>
+      <div class="compare-row">
+        <div class="compare-box" style="background:#dcfce7; border:1.5px solid #22c55e; color:#14532d;">// ✅ Prisma Client query
+const user = await prisma.user.findUnique({
+  where: { email: "ada@example.com" },
+  include: { posts: true },
+})
+// user is fully typed! 🎉
+// user.posts[0].title is autocompleted</div>
+        <div class="compare-box" style="background:#fef2f2; border:1.5px solid #f87171; color:#991b1b;">// ❌ Without Prisma (raw SQL)
+const result = await db.query(
+  "SELECT * FROM users WHERE email=$1",
+  ["ada@example.com"]
+)
+// result is 'any' — no types,
+// no autocomplete 😢</div>
+      </div>
+    </div>
+
+    <div class="mental-model" style="background:white; border:2px dashed #22c55e; color:#14532d;">
+      💡 <strong>Mental model:</strong> Prisma is like a <em>translator</em> between your TypeScript code and your database. You write TypeScript, Prisma writes the SQL. It also keeps your DB schema and app types <em>always in sync</em>.
+    </div>
+  </div>
+
+  <!-- ══════════ TOGETHER ══════════ -->
+  <div id="together" class="panel">
+    <div class="card">
+      <div class="card-title">Full-stack data flow with both 🚀</div>
+
+      <div id="flow-diagram"></div>
+    </div>
+
+    <div class="insight-cards">
+      <div class="insight-card" style="background:#fff7ed; border:2.5px solid #f97316; box-shadow:4px 4px 0 #f9731630;">
+        <div class="insight-title" style="color:#ea580c;">TanStack lives in the browser</div>
+        <div class="insight-body" style="color:#7c2d12;">
+          Handles <em>when</em> to fetch, <em>how long</em> to cache, and <em>how</em> to display loading/error states. Your UI layer expert.
+        </div>
+      </div>
+      <div class="insight-card" style="background:#f0fdf4; border:2.5px solid #22c55e; box-shadow:4px 4px 0 #22c55e30;">
+        <div class="insight-title" style="color:#16a34a;">Prisma lives on the server</div>
+        <div class="insight-body" style="color:#14532d;">
+          Handles <em>what</em> to store, <em>how</em> to query it, and <em>keeping types in sync</em> with your schema. Your database expert.
+        </div>
+      </div>
+      <div class="insight-card" style="background:#fdf4ff; border:2.5px solid #a855f7; box-shadow:4px 4px 0 #a855f730;">
+        <div class="insight-title" style="color:#9333ea;">Together = end-to-end type safety</div>
+        <div class="insight-body" style="color:#581c87;">
+          Prisma types flow up to your API, TanStack Query exposes them on the frontend. <em>Full type safety from DB to UI!</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>✏️ drawn with love — click the tabs to explore each concept</footer>
+
+  <script>
+    // ── Tab switching ──
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.panel');
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ── Build "Together" flow diagram ──
+    const flowSteps = [
+      { label: "👤 User clicks button",                    color: "#dbeafe", border: "#3b82f6", side: "frontend" },
+      null,
+      { label: "⚡ TanStack Query → calls API",            color: "#fff7ed", border: "#f97316", side: "frontend" },
+      null,
+      { label: "🌐 API route handler (Next.js / Express)", color: "#f5f3ff", border: "#8b5cf6", side: "server"   },
+      null,
+      { label: "🔷 Prisma Client → SQL query",             color: "#f0fdf4", border: "#22c55e", side: "server"   },
+      null,
+      { label: "🗄️ Database returns rows",                 color: "#fef9c3", border: "#eab308", side: "db"       },
+      null,
+      { label: "🔷 Prisma returns typed objects",          color: "#f0fdf4", border: "#22c55e", side: "server"   },
+      null,
+      { label: "⚡ TanStack Query caches & provides data", color: "#fff7ed", border: "#f97316", side: "frontend" },
+      null,
+      { label: "🖥️ React re-renders with fresh data ✨",   color: "#dbeafe", border: "#3b82f6", side: "frontend" },
+    ];
+
+    const container = document.getElementById('flow-diagram');
+    flowSteps.forEach(step => {
+      if (!step) {
+        const arrow = document.createElement('div');
+        arrow.className = 'flow-arrow';
+        arrow.textContent = '↕';
+        container.appendChild(arrow);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'flow-row';
+
+        const box = document.createElement('div');
+        box.className = 'flow-box';
+        box.style.cssText = `background:${step.color}; border:2px solid ${step.border}; box-shadow:3px 3px 0 ${step.border}30;`;
+        const label = document.createElement('span');
+        label.textContent = step.label;
+        box.appendChild(label);
+
+        const side = document.createElement('div');
+        side.className = 'flow-side';
+        side.textContent = step.side;
+
+        row.appendChild(box);
+        row.appendChild(side);
+        container.appendChild(row);
+      }
+    });
+  </script>
+</body>
+</html>

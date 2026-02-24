@@ -8,16 +8,10 @@ import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
 import { useTheme } from "../providers/ThemeProvider";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const { darkMode } = useTheme();
-  const [agreed, setAgreed] = useState(false);
+  const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
-
-  const UserIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-  );
 
   const MailIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -29,8 +23,11 @@ export default function RegisterPage() {
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "bg-[#0f0f13]" : "bg-gray-100"}`}>
       <Navbar />
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-10">
-        <div className={`w-full max-w-sm rounded-2xl p-8 transition-all duration-300
+      {/* Main content */}
+      <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 sm:px-6 py-6 sm:py-10">
+
+        {/* Card */}
+        <div className={`w-full max-w-sm sm:max-w-md md:max-w-sm rounded-none sm:rounded-2xl p-6 sm:p-8 transition-all duration-300
           ${darkMode
             ? "bg-[#1a1a22] shadow-[0_0_0_1px_#2a2a38,0_24px_48px_rgba(0,0,0,0.4)]"
             : "bg-white shadow-[0_0_0_1px_#e5e7eb,0_24px_48px_rgba(59,130,246,0.08)]"
@@ -39,10 +36,10 @@ export default function RegisterPage() {
           {/* Header */}
           <div className="text-center mb-5">
             <h1 className={`text-2xl font-extrabold tracking-tight mb-1 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
-              Create an account
+              Welcome back
             </h1>
             <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
-              Start optimizing your study routine with AI today.
+              Enter your credentials to access your study planner
             </p>
           </div>
 
@@ -68,7 +65,7 @@ export default function RegisterPage() {
           <div className="flex items-center gap-3 mb-4">
             <div className={`flex-1 h-px ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`} />
             <span className={`text-[11px] whitespace-nowrap tracking-widest font-medium ${darkMode ? "text-gray-600" : "text-gray-400"}`}>
-              OR CONTINUE WITH EMAIL
+              OR CONTINUE WITH
             </span>
             <div className={`flex-1 h-px ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`} />
           </div>
@@ -76,59 +73,53 @@ export default function RegisterPage() {
           {/* Form */}
           <div className="flex flex-col gap-3">
             <FormInput
-              label="Full Name"
-              placeholder="Jane Doe"
-              icon={<UserIcon />}
-            />
-
-            <FormInput
-              label="Email Address"
+              label="Email"
               type="email"
-              placeholder="name@example.com"
+              placeholder="name@university.edu"
               icon={<MailIcon />}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               validate
             />
 
-            <PasswordInput />
+            {/* Password row with Forgot password link */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className={`text-xs font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+                  Password
+                </label>
+                <Link href="/forgot-password" className="text-xs text-blue-500 hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+              <PasswordInput hideLabel hideSecurityBar />
+            </div>
 
-            {/* Checkbox */}
-            <div className="flex items-start gap-2 mt-1">
+            {/* Remember me */}
+            <div className="flex items-center gap-2 mt-1">
               <input
                 type="checkbox"
-                id="terms"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="mt-0.5 accent-blue-500 cursor-pointer"
+                id="remember"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                className="accent-blue-500 cursor-pointer"
               />
-              <label htmlFor="terms" className={`text-xs cursor-pointer leading-relaxed ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                I agree to the{" "}
-                <a href="#" className="text-blue-500 hover:underline font-medium">
-                  Terms of Service and Privacy Policy
-                </a>
-                .
+              <label htmlFor="remember" className={`text-xs cursor-pointer ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                Remember me for 30 days
               </label>
             </div>
 
             {/* Submit */}
-            <button
-              disabled={!agreed}
-              className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1
-                ${agreed
-                  ? "bg-blue-500 hover:bg-blue-600 active:scale-[0.98] cursor-pointer"
-                  : "bg-gray-300 cursor-not-allowed"
-                }`}
-            >
-              Create account →
+            <button className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1 cursor-pointer">
+              Sign in →
             </button>
           </div>
 
-          {/* Sign in */} 
+          {/* Register link */}
           <p className={`text-center text-sm mt-5 ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-500 font-semibold hover:underline">
-              Sign In
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-blue-500 font-semibold hover:underline">
+              Create an account
             </Link>
           </p>
         </div>

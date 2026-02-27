@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import FormInput from "./FormInput";
-import { useTheme } from "../providers/ThemeProvider";
 
 interface PasswordInputProps {
   hideLabel?: boolean;
@@ -18,7 +17,6 @@ function getSecurityLevel(pw: string) {
 }
 
 export default function PasswordInput({ hideLabel = false, hideSecurityBar = false }: PasswordInputProps) {
-  const { darkMode } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
 
@@ -34,7 +32,7 @@ export default function PasswordInput({ hideLabel = false, hideSecurityBar = fal
     <button
       type="button"
       onClick={() => setShowPassword(!showPassword)}
-      className={`flex items-center transition-colors ${darkMode ? "text-gray-500 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"}`}
+      className="flex items-center transition-colors text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
     >
       {showPassword ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -66,14 +64,14 @@ export default function PasswordInput({ hideLabel = false, hideSecurityBar = fal
       {!hideSecurityBar && (
         <div className="mt-2">
           <div className="flex justify-between mb-1">
-            <span className={`text-[10px] font-semibold tracking-widest uppercase ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+            <span className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500">
               Security Level
             </span>
             <span className={`text-[10px] font-bold tracking-widest uppercase ${security.color}`}>
               {security.label}
             </span>
           </div>
-          <div className={`h-1 rounded-full overflow-hidden ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`}>
+          <div className="h-1 rounded-full overflow-hidden bg-gray-200 dark:bg-[#2a2a38]">
             <div className={`h-full rounded-full transition-all duration-500 ${security.bar} ${security.width}`} />
           </div>
         </div>

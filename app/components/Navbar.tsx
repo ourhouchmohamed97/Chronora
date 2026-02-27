@@ -5,16 +5,16 @@ import { useState } from "react";
 import { useTheme } from "../providers/ThemeProvider";
 
 export default function Navbar() {
-  const { darkMode, toggleDarkMode } = useTheme();
+  const { toggleDarkMode, darkMode } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className={`sticky top-0 z-50 border-b transition-colors duration-300 ${darkMode ? "bg-[#1a1a22] border-[#2a2a38]" : "bg-white border-gray-200"}`}>
+    <nav className="sticky top-0 z-50 border-b transition-colors duration-300 bg-white border-gray-200 dark:bg-[#1a1a22] dark:border-[#2a2a38]">
       <div className="flex items-center justify-between px-4 sm:px-8 lg:px-12 h-16">
 
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <img src="/images/chronora_logo.png" alt="Chronora" className="h-25 sm:h-25 md:h-25 w-auto" />
+          <img src="/images/chronora_logo.png" alt="Chronora" className="h-25 w-auto" />
         </Link>
 
         {/* Nav Links — hidden on mobile */}
@@ -23,7 +23,7 @@ export default function Navbar() {
             <a
               key={item}
               href="#"
-              className={`text-sm font-medium transition-colors duration-200 hover:text-blue-500 ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              className="text-sm font-medium transition-colors duration-200 text-gray-500 hover:text-blue-500 dark:text-gray-400"
             >
               {item}
             </a>
@@ -36,7 +36,7 @@ export default function Navbar() {
           <button
             onClick={toggleDarkMode}
             aria-label="Toggle dark mode"
-            className={`p-1.5 rounded-md transition-colors ${darkMode ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-800"}`}
+            className="p-1.5 rounded-md transition-colors text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
           >
             {darkMode ? (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -52,7 +52,7 @@ export default function Navbar() {
           {/* Sign In — hidden on mobile */}
           <Link
             href="/login"
-            className={`hidden sm:block text-sm font-medium transition-colors hover:text-blue-500 ${darkMode ? "text-gray-200" : "text-gray-800"}`}
+            className="hidden sm:block text-sm font-medium transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
           >
             Sign In
           </Link>
@@ -66,7 +66,7 @@ export default function Navbar() {
           {/* Hamburger — mobile only */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={`md:hidden p-1.5 rounded-md ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+            className="md:hidden p-1.5 rounded-md text-gray-600 dark:text-gray-400"
             aria-label="Toggle menu"
           >
             {menuOpen ? (
@@ -84,19 +84,19 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className={`md:hidden px-4 pb-4 flex flex-col gap-3 border-t ${darkMode ? "border-[#2a2a38]" : "border-gray-100"}`}>
+        <div className="md:hidden px-4 pb-4 flex flex-col gap-3 border-t border-gray-100 dark:border-[#2a2a38]">
           {["Features", "How it works", "Pricing"].map((item) => (
             <a
               key={item}
               href="#"
-              className={`text-sm font-medium py-1 transition-colors hover:text-blue-500 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+              className="text-sm font-medium py-1 transition-colors text-gray-600 hover:text-blue-500 dark:text-gray-400"
             >
               {item}
             </a>
           ))}
           <Link
             href="/login"
-            className={`text-sm font-medium py-1 transition-colors hover:text-blue-500 ${darkMode ? "text-gray-200" : "text-gray-800"}`}
+            className="text-sm font-medium py-1 transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
           >
             Sign In
           </Link>

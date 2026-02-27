@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { useTheme } from "../providers/ThemeProvider";
 
 interface FormInputProps {
   label: string;
@@ -28,7 +27,6 @@ export default function FormInput({
   rightElement,
   validate = false,
 }: FormInputProps) {
-  const { darkMode } = useTheme();
   const [touched, setTouched] = useState(false);
 
   const isEmpty = validate && type === "email" && touched && value !== undefined && value.length === 0;
@@ -44,14 +42,14 @@ export default function FormInput({
   return (
     <div>
       {label && (
-        <label className={`block text-xs font-semibold mb-1.5 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+        <label className="block text-xs font-semibold mb-1.5 text-gray-800 dark:text-gray-200">
           {label}
         </label>
       )}
       <div className="relative">
         {icon && (
           <span className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center
-            ${errorMessage ? "text-red-400" : isValid ? "text-green-500" : darkMode ? "text-gray-500" : "text-gray-400"}`}>
+            ${errorMessage ? "text-red-400" : isValid ? "text-green-500" : "text-gray-400 dark:text-gray-500"}`}>
             {icon}
           </span>
         )}
@@ -66,15 +64,13 @@ export default function FormInput({
             ${icon ? "pl-9" : "pl-3"}
             ${rightElement || isValid || errorMessage ? "pr-10" : "pr-3"}
             py-2.5
+            bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400
+            dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-100 dark:placeholder-gray-600
             ${errorMessage
-              ? "border-red-400 focus:border-red-500"
+              ? "border-red-400 focus:border-red-500 dark:border-red-400 dark:focus:border-red-500"
               : isValid
-              ? "border-green-400 focus:border-green-500"
+              ? "border-green-400 focus:border-green-500 dark:border-green-400 dark:focus:border-green-500"
               : "focus:border-blue-500"
-            }
-            ${darkMode
-              ? "bg-[#0f0f13] border-[#2a2a38] text-gray-100 placeholder-gray-600"
-              : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"
             }`}
         />
 

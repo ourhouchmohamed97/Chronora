@@ -3,7 +3,6 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { useTheme } from "./providers/ThemeProvider";
 
 import {
   TrendingUp,
@@ -17,13 +16,9 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const { darkMode } = useTheme();
-
   return (
     <div
-      className={`min-h-screen font-sans overflow-x-hidden transition-colors duration-300 ${
-        darkMode ? "bg-gray-900" : "bg-white"
-      }`}
+      className="min-h-screen font-sans overflow-x-hidden transition-colors duration-300 bg-white dark:bg-gray-900"
       style={{ fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif" }}
     >
       <style>{`
@@ -64,19 +59,12 @@ export default function Home() {
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full opacity-10 pointer-events-none"
             style={{
-              background:
-                "radial-gradient(ellipse, #3B5BDB 0%, transparent 70%)",
+              background: "radial-gradient(ellipse, #3B5BDB 0%, transparent 70%)",
             }}
           />
 
           <div className="max-w-3xl mx-auto text-center">
-            <div
-              className={`fade-up-1 inline-flex items-center gap-2 border text-xs font-semibold px-3 py-1.5 rounded-full mb-6 ${
-                darkMode
-                  ? "bg-blue-900/30 border-blue-800 text-blue-300"
-                  : "bg-blue-50 border-blue-100 text-blue-700"
-              }`}
-            >
+            <div className="fade-up-1 inline-flex items-center gap-2 border text-xs font-semibold px-3 py-1.5 rounded-full mb-6 bg-blue-50 border-blue-100 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
@@ -84,22 +72,13 @@ export default function Home() {
               Now with Advanced Deadline Prediction
             </div>
 
-            {/* <h1 className="hero-title fade-up-2 text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 text-gray-900 dark:text-white leading-tight mb-5"> */}
-            <h1
-              className={`hero-title fade-up-2 text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-5 ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h1 className="hero-title fade-up-2 text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-5 text-gray-900 dark:text-white">
               Study <span className="gradient-text italic">Smarter,</span>
               <br />
               Not Harder.
             </h1>
 
-            <p
-              className={`fade-up-3 text-lg max-w-xl mx-auto mb-8 leading-relaxed ${
-                darkMode ? "text-slate-400" : "text-slate-500"
-              }`}
-            >
+            <p className="fade-up-3 text-lg max-w-xl mx-auto mb-8 leading-relaxed text-slate-500 dark:text-slate-400">
               Unlock your full academic potential with our AI-driven scheduler.
               We analyze your workload, predict deadlines, and create the
               perfect study routine tailored just for you.
@@ -108,45 +87,14 @@ export default function Home() {
             <div className="fade-up-4 flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
               <button className="btn-primary text-white font-semibold px-7 py-3.5 rounded-xl flex items-center gap-2 shadow-lg">
                 Start Free Trial
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
-              <button
-                className={`font-semibold px-7 py-3.5 rounded-xl border transition-all flex items-center gap-2 ${
-                  darkMode
-                    ? "text-slate-300 border-slate-700 hover:border-blue-600 hover:text-blue-400"
-                    : "text-slate-700 border-slate-200 hover:border-blue-300 hover:text-blue-600"
-                }`}
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+              <button className="font-semibold px-7 py-3.5 rounded-xl border transition-all flex items-center gap-2 text-slate-700 border-slate-200 hover:border-blue-300 hover:text-blue-600 dark:text-slate-300 dark:border-slate-700 dark:hover:border-blue-600 dark:hover:text-blue-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 View Demo
               </button>
@@ -154,32 +102,14 @@ export default function Home() {
 
             {/* Dashboard Mockup */}
             <div className="fade-in-5 float relative mx-auto max-w-2xl">
-              <div
-                className={`rounded-2xl border overflow-hidden ${
-                  darkMode
-                    ? "bg-gray-800 border-slate-700 dashboard-shadow"
-                    : "bg-white border-slate-100 dashboard-shadow"
-                }`}
-              >
+              <div className="rounded-2xl border overflow-hidden bg-white border-slate-100 dashboard-shadow dark:bg-gray-800 dark:border-slate-700">
                 {/* Header */}
-                <div
-                  className={`flex items-center justify-between px-5 py-3 border-b ${
-                    darkMode ? "border-slate-700" : "border-slate-100"
-                  }`}
-                >
+                <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-700">
                   <div>
-                    <p
-                      className={`text-xs font-semibold ${
-                        darkMode ? "text-slate-200" : "text-slate-800"
-                      }`}
-                    >
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                       Performance Analytics
                     </p>
-                    <p
-                      className={`text-[10px] ${
-                        darkMode ? "text-slate-500" : "text-slate-400"
-                      }`}
-                    >
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">
                       Track your progress and optimize your learning efficiency
                     </p>
                   </div>
@@ -190,33 +120,15 @@ export default function Home() {
                         className={`text-[10px] px-2.5 py-1 rounded-md font-medium ${
                           i === 0
                             ? "bg-blue-600 text-white"
-                            : darkMode
-                            ? "text-slate-400 hover:bg-gray-700"
-                            : "text-slate-500 hover:bg-slate-50"
+                            : "text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-gray-700"
                         }`}
                       >
                         {t}
                       </button>
                     ))}
-                    <button
-                      className={`text-[10px] px-2.5 py-1 rounded-md border flex items-center gap-1 ${
-                        darkMode
-                          ? "text-slate-400 border-slate-600 hover:bg-gray-700"
-                          : "text-slate-500 border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                        />
+                    <button className="text-[10px] px-2.5 py-1 rounded-md border flex items-center gap-1 text-slate-500 border-slate-200 hover:bg-slate-50 dark:text-slate-400 dark:border-slate-600 dark:hover:bg-gray-700">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                       </svg>
                       Export
                     </button>
@@ -224,67 +136,18 @@ export default function Home() {
                 </div>
 
                 {/* Stats Row */}
-                <div
-                  className={`grid grid-cols-4 gap-px border-b ${
-                    darkMode
-                      ? "bg-gray-700 border-slate-700"
-                      : "bg-slate-100 border-slate-100"
-                  }`}
-                >
+                <div className="grid grid-cols-4 gap-px border-b bg-slate-100 border-slate-100 dark:bg-gray-700 dark:border-slate-700">
                   {[
-                    {
-                      label: "Total Study Hours",
-                      value: "28.4 hrs",
-                      delta: "+13.8%",
-                      pos: true,
-                    },
-                    {
-                      label: "Task Completion",
-                      value: "91%",
-                      delta: "+4.2%",
-                      pos: true,
-                    },
-                    {
-                      label: "Overdue Tasks",
-                      value: "3",
-                      delta: "",
-                      pos: false,
-                    },
-                    {
-                      label: "Avg. Focus Depth",
-                      value: "42 min",
-                      delta: "-1:00",
-                      pos: false,
-                    },
+                    { label: "Total Study Hours", value: "28.4 hrs", delta: "+13.8%", pos: true },
+                    { label: "Task Completion", value: "91%", delta: "+4.2%", pos: true },
+                    { label: "Overdue Tasks", value: "3", delta: "", pos: false },
+                    { label: "Avg. Focus Depth", value: "42 min", delta: "-1:00", pos: false },
                   ].map((s) => (
-                    <div
-                      key={s.label}
-                      className={`p-3 ${
-                        darkMode ? "bg-gray-800" : "bg-white"
-                      }`}
-                    >
-                      <p
-                        className={`text-[9px] mb-1 ${
-                          darkMode ? "text-slate-500" : "text-slate-400"
-                        }`}
-                      >
-                        {s.label}
-                      </p>
-                      <p
-                        className={`text-base font-bold ${
-                          darkMode ? "text-slate-200" : "text-slate-800"
-                        }`}
-                      >
-                        {s.value}
-                      </p>
+                    <div key={s.label} className="p-3 bg-white dark:bg-gray-800">
+                      <p className="text-[9px] mb-1 text-slate-400 dark:text-slate-500">{s.label}</p>
+                      <p className="text-base font-bold text-slate-800 dark:text-slate-200">{s.value}</p>
                       {s.delta && (
-                        <p
-                          className={`text-[9px] font-medium ${
-                            s.delta.startsWith("+")
-                              ? "text-emerald-500"
-                              : "text-red-400"
-                          }`}
-                        >
+                        <p className={`text-[9px] font-medium ${s.delta.startsWith("+") ? "text-emerald-500" : "text-red-400"}`}>
                           {s.delta}
                         </p>
                       )}
@@ -295,16 +158,8 @@ export default function Home() {
                 {/* Charts */}
                 <div className="grid grid-cols-2 gap-4 p-4">
                   {/* Bar chart */}
-                  <div
-                    className={`rounded-xl p-3 ${
-                      darkMode ? "bg-gray-700" : "bg-slate-50"
-                    }`}
-                  >
-                    <p
-                      className={`text-[10px] font-semibold mb-3 ${
-                        darkMode ? "text-slate-300" : "text-slate-700"
-                      }`}
-                    >
+                  <div className="rounded-xl p-3 bg-slate-50 dark:bg-gray-700">
+                    <p className="text-[10px] font-semibold mb-3 text-slate-700 dark:text-slate-300">
                       Task Completion Trend
                     </p>
                     <div className="flex items-end gap-1 h-16">
@@ -314,87 +169,37 @@ export default function Home() {
                           className={`flex-1 rounded-sm ${
                             i > 6
                               ? "bg-gradient-to-b from-[#3B5BDB] to-[#7048E8]"
-                              : darkMode
-                              ? "bg-slate-600"
-                              : "bg-slate-200"
+                              : "bg-slate-200 dark:bg-slate-600"
                           }`}
                           style={{ height: `${h}%` }}
                         />
                       ))}
                     </div>
                     <div className="flex justify-between mt-2">
-                      {["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"].map(
-                        (w) => (
-                          <span
-                            key={w}
-                            className={`text-[8px] ${
-                              darkMode ? "text-slate-500" : "text-slate-400"
-                            }`}
-                          >
-                            {w}
-                          </span>
-                        )
-                      )}
+                      {["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"].map((w) => (
+                        <span key={w} className="text-[8px] text-slate-400 dark:text-slate-500">{w}</span>
+                      ))}
                     </div>
                   </div>
 
                   {/* Radial */}
-                  <div
-                    className={`rounded-xl p-3 flex flex-col items-center ${
-                      darkMode ? "bg-gray-700" : "bg-slate-50"
-                    }`}
-                  >
-                    <p
-                      className={`text-[10px] font-semibold mb-2 self-start ${
-                        darkMode ? "text-slate-300" : "text-slate-700"
-                      }`}
-                    >
+                  <div className="rounded-xl p-3 flex flex-col items-center bg-slate-50 dark:bg-gray-700">
+                    <p className="text-[10px] font-semibold mb-2 self-start text-slate-700 dark:text-slate-300">
                       Productivity Pulse
                     </p>
                     <div className="relative w-16 h-16 my-1">
-                      <svg
-                        className="w-full h-full -rotate-90"
-                        viewBox="0 0 36 36"
-                      >
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15.9"
-                          fill="none"
-                          stroke={darkMode ? "#4B5563" : "#E2E8F0"}
-                          strokeWidth="3"
-                        />
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15.9"
-                          fill="none"
-                          stroke="url(#grad)"
-                          strokeWidth="3"
-                          strokeDasharray="88, 100"
-                          strokeLinecap="round"
-                        />
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.9" fill="none" className="stroke-slate-200 dark:stroke-gray-600" strokeWidth="3" />
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad)" strokeWidth="3" strokeDasharray="88, 100" strokeLinecap="round" />
                         <defs>
-                          <linearGradient
-                            id="grad"
-                            x1="0%"
-                            y1="0%"
-                            x2="100%"
-                            y2="0%"
-                          >
+                          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#3B5BDB" />
                             <stop offset="100%" stopColor="#7048E8" />
                           </linearGradient>
                         </defs>
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span
-                          className={`text-sm font-bold ${
-                            darkMode ? "text-slate-200" : "text-slate-800"
-                          }`}
-                        >
-                          88
-                        </span>
+                        <span className="text-sm font-bold text-slate-800 dark:text-slate-200">88</span>
                       </div>
                     </div>
                     <div className="w-full space-y-1 mt-1">
@@ -403,20 +208,8 @@ export default function Home() {
                         { label: "Distraction rate", val: "9%" },
                       ].map((s) => (
                         <div key={s.label} className="flex justify-between">
-                          <span
-                            className={`text-[9px] ${
-                              darkMode ? "text-slate-400" : "text-slate-500"
-                            }`}
-                          >
-                            {s.label}
-                          </span>
-                          <span
-                            className={`text-[9px] font-semibold ${
-                              darkMode ? "text-slate-300" : "text-slate-700"
-                            }`}
-                          >
-                            {s.val}
-                          </span>
+                          <span className="text-[9px] text-slate-500 dark:text-slate-400">{s.label}</span>
+                          <span className="text-[9px] font-semibold text-slate-700 dark:text-slate-300">{s.val}</span>
                         </div>
                       ))}
                     </div>
@@ -428,24 +221,12 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section
-          className={`py-20 transition-colors duration-300 ${
-            darkMode ? "bg-gray-800" : "bg-gray-50"
-          }`}
-        >
+        <section className="py-20 transition-colors duration-300 bg-gray-50 dark:bg-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2
-              className={`text-3xl font-bold mb-4 text-center ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h2 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
               Master Your Schedule
             </h2>
-            <p
-              className={`text-xl mb-12 text-center max-w-3xl mx-auto ${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              }`}
-            >
+            <p className="text-xl mb-12 text-center max-w-3xl mx-auto text-gray-600 dark:text-gray-300">
               Our suite of intelligent tools takes the guesswork out of
               planning, allowing you to focus on what actually matters—learning.
             </p>
@@ -453,67 +234,47 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Zap className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />,
+                  icon: <Zap className="w-8 h-8" />,
                   title: "AI Smart Scheduling",
-                  description:
-                    "Our algorithm learns your peak focus times and automatically sorts difficult subjects when you're most productive.",
+                  description: "Our algorithm learns your peak focus times and automatically sorts difficult subjects when you're most productive.",
                 },
                 {
-                  icon: <Scale className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />,
+                  icon: <Scale className="w-8 h-8" />,
                   title: "Workload Balancing",
-                  description:
-                    "Visualize your weekly efforts. We automatically redistribute tasks if your 'stress score' hits critical levels.",
+                  description: "Visualize your weekly efforts. We automatically redistribute tasks if your 'stress score' hits critical levels.",
                 },
                 {
-                  icon: <Clock className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />,
+                  icon: <Clock className="w-8 h-8" />,
                   title: "Deadline Prediction",
-                  description:
-                    "Based on past performance and complexity, we tell you exactly when to start a project to finish stress-free.",
+                  description: "Based on past performance and complexity, we tell you exactly when to start a project to finish stress-free.",
                 },
                 {
-                  icon: <Layers className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />,
+                  icon: <Layers className="w-8 h-8" />,
                   title: "Distribution Free",
-                  description:
-                    "Sync with your browser to automatically block distracting apps during your scheduled deep-work sessions.",
+                  description: "Sync with your browser to automatically block distracting apps during your scheduled deep-work sessions.",
                 },
                 {
-                  icon: <TrendingUp className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />,
+                  icon: <TrendingUp className="w-8 h-8" />,
                   title: "Instant Adjustments",
-                  description:
-                    "Life happens. If you miss a block, simply tell the AI and your entire plan recalibrates in seconds.",
+                  description: "Life happens. If you miss a block, simply tell the AI and your entire plan recalibrates in seconds.",
                 },
                 {
-                  icon: <Calendar className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />,
+                  icon: <Calendar className="w-8 h-8" />,
                   title: "Full Integration",
-                  description:
-                    "Works seamlessly with Google Calendar, Outlook, and Notion to keep your whole life in one single view.",
+                  description: "Works seamlessly with Google Calendar, Outlook, and Notion to keep your whole life in one single view.",
                 },
               ].map((feature, index) => (
                 <div
                   key={index}
-                  className={`rounded-xl p-6 shadow-sm hover:shadow-md transition ${
-                    darkMode
-                      ? "bg-gray-900 hover:shadow-indigo-900/30"
-                      : "bg-white hover:shadow-indigo-200/50"
-                  }`}
+                  className="rounded-xl p-6 shadow-sm hover:shadow-md transition bg-white hover:shadow-indigo-200/50 dark:bg-gray-900 dark:hover:shadow-indigo-900/30"
                 >
-                  <div className="mb-4">
-                    {React.cloneElement(feature.icon, {
-                      className: `w-8 h-8 ${
-                        darkMode ? "text-indigo-400" : "text-indigo-600"
-                      }`,
-                    })}
+                  <div className="mb-4 text-indigo-600 dark:text-indigo-400">
+                    {feature.icon}
                   </div>
-                  <h3
-                    className={`text-xl font-semibold mb-2 ${
-                      darkMode ? "text-white" : "text-gray-900"
-                    }`}
-                  >
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
                     {feature.title}
                   </h3>
-                  <p className={darkMode ? "text-gray-300" : "text-gray-600"}>
-                    {feature.description}
-                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -521,26 +282,13 @@ export default function Home() {
         </section>
 
         {/* 3 Steps Section */}
-        <section
-          className={`py-20 transition-colors duration-300 ${
-            darkMode ? "bg-gray-900" : "bg-white"
-          }`}
-        >
+        <section className="py-20 transition-colors duration-300 bg-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2
-              className={`text-3xl font-bold mb-4 text-center ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h2 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
               Your Path to 4.0 in 3 Steps
             </h2>
-            <p
-              className={`text-xl mb-12 text-center ${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              }`}
-            >
-              Simple, automated, and powerful. Getting started takes less than
-              two minutes.
+            <p className="text-xl mb-12 text-center text-gray-600 dark:text-gray-300">
+              Simple, automated, and powerful. Getting started takes less than two minutes.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -548,48 +296,29 @@ export default function Home() {
                 {
                   step: "01",
                   title: "Sync Your Data",
-                  description:
-                    "Connect your syllabus, calendars, and current task lists. We securely import all your commitments.",
+                  description: "Connect your syllabus, calendars, and current task lists. We securely import all your commitments.",
                 },
                 {
                   step: "02",
                   title: "AI Analyzes",
-                  description:
-                    "The engine identifies deadlines, evaluates task complexity, and checks your available hours.",
+                  description: "The engine identifies deadlines, evaluates task complexity, and checks your available hours.",
                 },
                 {
                   step: "03",
                   title: "Optimized Plan",
-                  description:
-                    "Receive a pixel-perfect daily routine that maximizes learning while preserving your mental health.",
+                  description: "Receive a pixel-perfect daily routine that maximizes learning while preserving your mental health.",
                 },
               ].map((item, index) => (
                 <div key={index} className="text-center">
-                  <div
-                    className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                      darkMode
-                        ? "bg-indigo-900/40"
-                        : "bg-indigo-100"
-                    }`}
-                  >
-                    <span
-                      className={`text-2xl font-bold ${
-                        darkMode ? "text-indigo-300" : "text-indigo-600"
-                      }`}
-                    >
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-indigo-100 dark:bg-indigo-900/40">
+                    <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">
                       {item.step}
                     </span>
                   </div>
-                  <h3
-                    className={`text-xl font-semibold mb-2 ${
-                      darkMode ? "text-white" : "text-gray-900"
-                    }`}
-                  >
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
                     {item.title}
                   </h3>
-                  <p className={darkMode ? "text-gray-300" : "text-gray-600"}>
-                    {item.description}
-                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -597,26 +326,13 @@ export default function Home() {
         </section>
 
         {/* Pricing Section */}
-        <section
-          className={`py-20 transition-colors duration-300 ${
-            darkMode ? "bg-gray-800" : "bg-gray-50"
-          }`}
-        >
+        <section className="py-20 transition-colors duration-300 bg-gray-50 dark:bg-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2
-              className={`text-3xl font-bold mb-4 text-center ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h2 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
               Simple Pricing for Every Goal
             </h2>
-            <p
-              className={`text-xl mb-12 text-center ${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              }`}
-            >
-              Start for free and upgrade as you grow. No hidden fees, cancel
-              anytime.
+            <p className="text-xl mb-12 text-center text-gray-600 dark:text-gray-300">
+              Start for free and upgrade as you grow. No hidden fees, cancel anytime.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -626,24 +342,14 @@ export default function Home() {
                   price: "$0",
                   period: "/mo",
                   description: "Perfect for high school or casual learners.",
-                  features: [
-                    "Basic analytics",
-                    "Task scheduling",
-                    "Email support",
-                  ],
+                  features: ["Basic analytics", "Task scheduling", "Email support"],
                 },
                 {
                   name: "Professor",
                   price: "$12",
                   period: "/mo",
-                  description:
-                    "Designed for university students & power users.",
-                  features: [
-                    "Advanced analytics",
-                    "Priority support",
-                    "Team features",
-                    "API access",
-                  ],
+                  description: "Designed for university students & power users.",
+                  features: ["Advanced analytics", "Priority support", "Team features", "API access"],
                   popular: true,
                 },
                 {
@@ -651,22 +357,13 @@ export default function Home() {
                   price: "$29",
                   period: "/mo",
                   description: "For teams of 3 or more.",
-                  features: [
-                    "Team management",
-                    "Collaboration tools",
-                    "Analytics dashboard",
-                    "24/7 support",
-                  ],
+                  features: ["Team management", "Collaboration tools", "Analytics dashboard", "24/7 support"],
                 },
               ].map((plan, index) => (
                 <div
                   key={index}
-                  className={`rounded-xl p-6 shadow-sm hover:shadow-md transition relative ${
-                    darkMode ? "bg-gray-900" : "bg-white"
-                  } ${
-                    plan.popular
-                      ? "border-2 border-indigo-600"
-                      : "border border-transparent"
+                  className={`rounded-xl p-6 shadow-sm hover:shadow-md transition relative bg-white dark:bg-gray-900 ${
+                    plan.popular ? "border-2 border-indigo-600" : "border border-transparent"
                   }`}
                 >
                   {plan.popular && (
@@ -674,34 +371,15 @@ export default function Home() {
                       Most Popular
                     </span>
                   )}
-                  <h3
-                    className={`text-xl font-bold mb-2 ${
-                      darkMode ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {plan.name}
-                  </h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{plan.name}</h3>
                   <div className="mb-4">
-                    <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-                      {plan.price}
-                    </span>
-                    <span
-                      className={darkMode ? "text-gray-400" : "text-gray-600"}
-                    >
-                      {plan.period}
-                    </span>
+                    <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{plan.price}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
                   </div>
-                  <p className={`mb-6 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                    {plan.description}
-                  </p>
+                  <p className="mb-6 text-gray-600 dark:text-gray-300">{plan.description}</p>
                   <ul className="space-y-3 mb-6">
                     {plan.features.map((feature, i) => (
-                      <li
-                        key={i}
-                        className={`flex items-center ${
-                          darkMode ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
+                      <li key={i} className="flex items-center text-gray-600 dark:text-gray-300">
                         <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 mr-2" />
                         {feature}
                       </li>
@@ -711,9 +389,7 @@ export default function Home() {
                     className={`w-full py-2 rounded-lg font-semibold transition ${
                       plan.popular
                         ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                        : darkMode
-                        ? "border-2 border-indigo-400 text-indigo-400 hover:bg-indigo-900/20"
-                        : "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+                        : "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-900/20"
                     }`}
                   >
                     Get Started
@@ -732,8 +408,7 @@ export default function Home() {
             </h2>
             <p className="text-xl text-indigo-100 dark:text-indigo-200 mb-10">
               Stop stressing about deadlines. Let our AI handle the planning so
-              you can focus on the learning. Join thousands of successful
-              students today.
+              you can focus on the learning. Join thousands of successful students today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-indigo-600 dark:bg-gray-100 dark:text-indigo-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-200 transition shadow-lg flex items-center justify-center gap-2">
@@ -745,9 +420,7 @@ export default function Home() {
             </div>
             <p className="text-indigo-200 dark:text-indigo-300 mt-6">
               No credit card required.{" "}
-              <span className="font-semibold">
-                Free forever version available.
-              </span>
+              <span className="font-semibold">Free forever version available.</span>
             </p>
           </div>
         </section>

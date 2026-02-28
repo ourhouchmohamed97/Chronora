@@ -6,10 +6,8 @@ import Navbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
-import { useTheme } from "../providers/ThemeProvider";
 
 export default function LoginPage() {
-  const { darkMode } = useTheme();
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -20,37 +18,29 @@ export default function LoginPage() {
   );
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "bg-[#0f0f13]" : "bg-gray-100"}`}>
+    <div className="min-h-screen transition-colors duration-300 bg-gray-100 dark:bg-[#0f0f13]">
       <Navbar />
 
-      {/* Main content */}
       <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 sm:px-6 py-6 sm:py-10">
-
-        {/* Card */}
-        <div className={`w-full max-w-sm sm:max-w-md md:max-w-sm rounded-none sm:rounded-2xl p-6 sm:p-8 transition-all duration-300
-          ${darkMode
-            ? "bg-[#1a1a22] shadow-[0_0_0_1px_#2a2a38,0_24px_48px_rgba(0,0,0,0.4)]"
-            : "bg-white shadow-[0_0_0_1px_#e5e7eb,0_24px_48px_rgba(59,130,246,0.08)]"
-          }`}
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-sm rounded-none sm:rounded-2xl p-6 sm:p-8 transition-all duration-300
+          bg-white shadow-[0_0_0_1px_#e5e7eb,0_24px_48px_rgba(59,130,246,0.08)]
+          dark:bg-[#1a1a22] dark:shadow-[0_0_0_1px_#2a2a38,0_24px_48px_rgba(0,0,0,0.4)]"
         >
           {/* Header */}
           <div className="text-center mb-5">
-            <h1 className={`text-2xl font-extrabold tracking-tight mb-1 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
+            <h1 className="text-2xl font-extrabold tracking-tight mb-1 text-gray-900 dark:text-gray-100">
               Welcome back
             </h1>
-            <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
+            <p className="text-sm text-gray-500">
               Enter your credentials to access your study planner
             </p>
           </div>
 
           {/* Google Button */}
-          <button
-            className={`w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
-              hover:border-blue-500
-              ${darkMode
-                ? "bg-[#0f0f13] border-[#2a2a38] text-gray-200"
-                : "bg-gray-50 border-gray-200 text-gray-700"
-              }`}
+          <button className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
+            hover:border-blue-500
+            bg-gray-50 border-gray-200 text-gray-700
+            dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-200"
           >
             <svg width="18" height="18" viewBox="0 0 18 18">
               <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z" />
@@ -63,11 +53,11 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-4">
-            <div className={`flex-1 h-px ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`} />
-            <span className={`text-[11px] whitespace-nowrap tracking-widest font-medium ${darkMode ? "text-gray-600" : "text-gray-400"}`}>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-[#2a2a38]" />
+            <span className="text-[11px] whitespace-nowrap tracking-widest font-medium text-gray-400 dark:text-gray-600">
               OR CONTINUE WITH
             </span>
-            <div className={`flex-1 h-px ${darkMode ? "bg-[#2a2a38]" : "bg-gray-200"}`} />
+            <div className="flex-1 h-px bg-gray-200 dark:bg-[#2a2a38]" />
           </div>
 
           {/* Form */}
@@ -85,7 +75,7 @@ export default function LoginPage() {
             {/* Password row with Forgot password link */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className={`text-xs font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+                <label className="text-xs font-semibold text-gray-800 dark:text-gray-200">
                   Password
                 </label>
                 <Link href="/forgot-password" className="text-xs text-blue-500 hover:underline">
@@ -104,7 +94,7 @@ export default function LoginPage() {
                 onChange={(e) => setRemember(e.target.checked)}
                 className="accent-blue-500 cursor-pointer"
               />
-              <label htmlFor="remember" className={`text-xs cursor-pointer ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+              <label htmlFor="remember" className="text-xs cursor-pointer text-gray-500 dark:text-gray-400">
                 Remember me for 30 days
               </label>
             </div>
@@ -116,7 +106,7 @@ export default function LoginPage() {
           </div>
 
           {/* Register link */}
-          <p className={`text-center text-sm mt-5 ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
+          <p className="text-center text-sm mt-5 text-gray-500">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="text-blue-500 font-semibold hover:underline">
               Create an account

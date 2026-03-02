@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useTheme } from "../providers/ThemeProvider";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const { toggleDarkMode, darkMode } = useTheme();
+  const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -49,19 +51,35 @@ export default function Navbar() {
             )}
           </button>
 
-          {/* Sign In — hidden on mobile */}
-          <Link
-            href="/login"
-            className="hidden sm:block text-sm font-medium transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
-          >
-            Sign In
-          </Link>
-
-          <Link href="/register">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200">
-              Start Free
-            </button>
-          </Link>
+          {session ? (
+            // Logged in → show user name + sign out
+            <>
+              <span className="hidden sm:block text-sm text-gray-500 dark:text-gray-400">
+                {session.user?.name ?? session.user?.email}
+              </span>
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="text-sm font-medium text-red-500 hover:text-red-600 transition-colors"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            // Not logged in → show Sign In + Start Free
+            <>
+              <Link
+                href="/login"
+                className="hidden sm:block text-sm font-medium transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
+              >
+                Sign In
+              </Link>
+              <Link href="/register">
+                <button className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200">
+                  Start Free
+                </button>
+              </Link>
+            </>
+          )}
 
           {/* Hamburger — mobile only */}
           <button
@@ -94,12 +112,21 @@ export default function Navbar() {
               {item}
             </a>
           ))}
-          <Link
-            href="/login"
-            className="text-sm font-medium py-1 transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
-          >
-            Sign In
-          </Link>
+          {session ? (
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="text-sm font-medium py-1 text-left text-red-500 hover:text-red-600"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="text-sm font-medium py-1 transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       )}
     </nav>

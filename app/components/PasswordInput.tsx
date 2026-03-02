@@ -6,6 +6,8 @@ import FormInput from "./FormInput";
 interface PasswordInputProps {
   hideLabel?: boolean;
   hideSecurityBar?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 function getSecurityLevel(pw: string) {
@@ -16,9 +18,19 @@ function getSecurityLevel(pw: string) {
   return { label: "STRONG", color: "text-green-500", bar: "bg-green-500", width: "w-full" };
 }
 
-export default function PasswordInput({ hideLabel = false, hideSecurityBar = false }: PasswordInputProps) {
+export default function PasswordInput({
+  hideLabel = false,
+  hideSecurityBar = false,
+  value,
+  onChange,
+}: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
+  const [internalPassword, setInternalPassword] = useState("");
+
+  // If value prop is passed → use it (controlled by parent)
+  // If not → use internal state (self-managed)
+  const password = value !== undefined ? value : internalPassword;
+  const handleChange = onChange ?? ((e: React.ChangeEvent<HTMLInputElement>) => setInternalPassword(e.target.value));
 
   const security = getSecurityLevel(password);
 
@@ -56,7 +68,7 @@ export default function PasswordInput({ hideLabel = false, hideSecurityBar = fal
         type={showPassword ? "text" : "password"}
         placeholder="········"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={handleChange}
         icon={<LockIcon />}
         rightElement={<EyeToggle />}
       />

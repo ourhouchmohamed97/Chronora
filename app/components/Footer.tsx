@@ -45,11 +45,14 @@ const Footer: React.FC = () => {
 
           {/* Product */}
           <div>
-            <h3 className="font-semibold mb-4 text-gray-900 dark:text-white">Product</h3>
+            <h3 className="font-semibold mb-4 transition-colors duration-300 text-gray-900 dark:text-white">Product</h3>
             <ul className="space-y-2">
               {['Features', 'Pricing', 'Demo', 'FAQ'].map((item) => (
                 <li key={item}>
-                  <a href={`#${item.toLowerCase()}`} className="text-sm transition-colors duration-200 text-gray-600 hover:text-blue-500 dark:text-gray-400">
+                  <a
+                    href={`#${item.toLowerCase()}`}
+                    className="text-sm transition-colors duration-200 text-gray-600 hover:text-blue-500 dark:text-gray-400"
+                  >
                     {item}
                   </a>
                 </li>
@@ -59,11 +62,14 @@ const Footer: React.FC = () => {
 
           {/* Company */}
           <div>
-            <h3 className="font-semibold mb-4 text-gray-900 dark:text-white">Company</h3>
+            <h3 className="font-semibold mb-4 transition-colors duration-300 text-gray-900 dark:text-white">Company</h3>
             <ul className="space-y-2">
               {['About', 'Blog', 'Careers', 'Contact'].map((item) => (
                 <li key={item}>
-                  <a href={`#${item.toLowerCase()}`} className="text-sm transition-colors duration-200 text-gray-600 hover:text-blue-500 dark:text-gray-400">
+                  <a
+                    href={`#${item.toLowerCase()}`}
+                    className="text-sm transition-colors duration-200 text-gray-600 hover:text-blue-500 dark:text-gray-400"
+                  >
                     {item}
                   </a>
                 </li>
@@ -73,13 +79,17 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center border-gray-200 dark:border-[#2a2a38]">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center transition-colors duration-300 border-gray-200 dark:border-[#2a2a38]">
+          <p className="text-sm transition-colors duration-300 text-gray-600 dark:text-gray-400">
             © {currentYear} Chronora. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
-              <a key={item} href="#" className="text-sm transition-colors duration-200 text-gray-600 hover:text-blue-500 dark:text-gray-400">
+              <a
+                key={item}
+                href="#"
+                className="text-sm transition-colors duration-200 text-gray-600 hover:text-blue-500 dark:text-gray-400"
+              >
                 {item}
               </a>
             ))}

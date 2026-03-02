@@ -2,14 +2,62 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Navbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [agreed, setAgreed] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!agreed) return;
+    setError("");
+    setLoading(true);
+
+    try {
+      // Step 1: Create user in database
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        setLoading(false);
+        return;
+      }
+
+      // Step 2: Auto sign in after registration
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("Account created but could not sign in. Please login.");
+        router.push("/login");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const UserIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -66,12 +114,21 @@ export default function RegisterPage() {
             <div className="flex-1 h-px bg-gray-200 dark:bg-[#2a2a38]" />
           </div>
 
+          {/* Error message */}
+          {error && (
+            <div className="mb-3 py-2.5 px-3 rounded-xl text-xs font-medium bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400">
+              {error}
+            </div>
+          )}
+
           {/* Form */}
           <div className="flex flex-col gap-3">
             <FormInput
               label="Full Name"
               placeholder="Jane Doe"
               icon={<UserIcon />}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
 
             <FormInput
@@ -84,7 +141,10 @@ export default function RegisterPage() {
               validate
             />
 
-            <PasswordInput />
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
             {/* Checkbox */}
             <div className="flex items-start gap-2 mt-1">
@@ -106,14 +166,15 @@ export default function RegisterPage() {
 
             {/* Submit */}
             <button
-              disabled={!agreed}
+              onClick={handleSubmit}
+              disabled={!agreed || loading}
               className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1
-                ${agreed
+                ${agreed && !loading
                   ? "bg-blue-500 hover:bg-blue-600 active:scale-[0.98] cursor-pointer"
                   : "bg-gray-300 cursor-not-allowed dark:bg-gray-700"
                 }`}
             >
-              Create account →
+              {loading ? "Creating account..." : "Create account →"}
             </button>
           </div>
 

@@ -31,7 +31,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-extrabold tracking-tight mb-1 text-gray-900 dark:text-gray-100">
               Welcome back
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-500">
+            <p className="text-sm text-gray-500">
               Enter your credentials to access your study planner
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
           </div>
 
           {/* Register link */}
-          <p className="text-center text-sm mt-5 text-gray-500 dark:text-gray-500">
+          <p className="text-center text-sm mt-5 text-gray-500">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="text-blue-500 font-semibold hover:underline">
               Create an account

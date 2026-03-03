@@ -4,6 +4,8 @@ import { useState } from "react";
 import FormInput from "./FormInput";
 
 interface PasswordInputProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   hideLabel?: boolean;
   hideSecurityBar?: boolean;
 }
@@ -16,15 +18,19 @@ function getSecurityLevel(pw: string) {
   return { label: "STRONG", color: "text-green-500", bar: "bg-green-500", width: "w-full" };
 }
 
-export default function PasswordInput({ hideLabel = false, hideSecurityBar = false }: PasswordInputProps) {
+export default function PasswordInput({
+  value,
+  onChange,
+  hideLabel = false,
+  hideSecurityBar = false,
+}: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
-
-  const security = getSecurityLevel(password);
+  const security = getSecurityLevel(value);
 
   const LockIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
     </svg>
   );
 
@@ -55,8 +61,8 @@ export default function PasswordInput({ hideLabel = false, hideSecurityBar = fal
         label={hideLabel ? "" : "Password"}
         type={showPassword ? "text" : "password"}
         placeholder="········"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={value}
+        onChange={onChange}
         icon={<LockIcon />}
         rightElement={<EyeToggle />}
       />

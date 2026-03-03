@@ -6,16 +6,29 @@ import Navbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [agreed, setAgreed] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const UserIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-  );
+  const handleRegister = async () => {
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+  
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error);
+      return;
+    }
+    router.push("/login");
+  };
 
   const MailIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -68,11 +81,6 @@ export default function RegisterPage() {
 
           {/* Form */}
           <div className="flex flex-col gap-3">
-            <FormInput
-              label="Full Name"
-              placeholder="Jane Doe"
-              icon={<UserIcon />}
-            />
 
             <FormInput
               label="Email Address"
@@ -84,7 +92,10 @@ export default function RegisterPage() {
               validate
             />
 
-            <PasswordInput />
+            <PasswordInput 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
             {/* Checkbox */}
             <div className="flex items-start gap-2 mt-1">
@@ -106,6 +117,7 @@ export default function RegisterPage() {
 
             {/* Submit */}
             <button
+              onClick={handleRegister}
               disabled={!agreed}
               className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1
                 ${agreed

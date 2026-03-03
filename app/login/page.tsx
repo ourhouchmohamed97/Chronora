@@ -6,10 +6,30 @@ import Navbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
+import {useRouter} from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+  
+    const data = await res.json();
+  
+    if (!res.ok) {
+      alert(data.error);
+      return;
+    }
+  
+    router.push("/dashboard");
+  };
 
   const MailIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -82,7 +102,11 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <PasswordInput hideLabel hideSecurityBar />
+              <PasswordInput 
+                hideLabel hideSecurityBar 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
             {/* Remember me */}
@@ -100,7 +124,9 @@ export default function LoginPage() {
             </div>
 
             {/* Submit */}
-            <button className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1 cursor-pointer">
+            <button 
+              onClick={handleLogin}
+              className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1 cursor-pointer">
               Sign in →
             </button>
           </div>

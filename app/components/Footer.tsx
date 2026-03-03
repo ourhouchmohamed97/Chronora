@@ -9,6 +9,7 @@ const Footer: React.FC = () => {
     <footer className="border-t transition-colors duration-300 bg-gray-50 border-gray-200 dark:bg-[#1a1a22] dark:border-[#2a2a38]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3">
@@ -42,7 +43,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Product */}
           <div>
             <h3 className="font-semibold mb-4 transition-colors duration-300 text-gray-900 dark:text-white">Product</h3>
             <ul className="space-y-2">

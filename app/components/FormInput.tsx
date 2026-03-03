@@ -67,9 +67,9 @@ export default function FormInput({
             bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400
             dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-100 dark:placeholder-gray-600
             ${errorMessage
-              ? "border-red-400 focus:border-red-500"
+              ? "border-red-400 focus:border-red-500 dark:border-red-400 dark:focus:border-red-500"
               : isValid
-              ? "border-green-400 focus:border-green-500"
+              ? "border-green-400 focus:border-green-500 dark:border-green-400 dark:focus:border-green-500"
               : "focus:border-blue-500"
             }`}
         />

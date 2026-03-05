@@ -11,10 +11,26 @@ interface PasswordInputProps {
 }
 
 function getSecurityLevel(pw: string) {
-  if (!pw) return { label: "EMPTY", color: "text-gray-400", bar: "bg-gray-300", width: "w-0" };
-  if (pw.length < 6) return { label: "WEAK", color: "text-red-500", bar: "bg-red-500", width: "w-1/4" };
-  if (pw.length < 10) return { label: "FAIR", color: "text-amber-500", bar: "bg-amber-500", width: "w-1/2" };
-  if (pw.length < 14) return { label: "GOOD", color: "text-blue-500", bar: "bg-blue-500", width: "w-3/4" };
+  if (!pw) {
+    return { label: "EMPTY", color: "text-gray-400", bar: "bg-gray-300", width: "w-0" };
+  }
+  let score = 0;
+  if (pw.length >= 8) score += 1;
+  if (pw.length >= 12) score += 1;
+  if (pw.length >= 16) score += 1;
+  if (/[a-z]/.test(pw)) score += 1;        // lowercase
+  if (/[A-Z]/.test(pw)) score += 1;        // uppercase
+  if (/[0-9]/.test(pw)) score += 1;        // numbers
+  if (/[^A-Za-z0-9]/.test(pw)) score += 1; // special characters
+  if (score <= 2) {
+    return { label: "WEAK", color: "text-red-500", bar: "bg-red-500", width: "w-1/4" };
+  }
+  if (score <= 4) {
+    return { label: "FAIR", color: "text-amber-500", bar: "bg-amber-500", width: "w-1/2" };
+  }
+  if (score <= 6) {
+    return { label: "GOOD", color: "text-blue-500", bar: "bg-blue-500", width: "w-3/4" };
+  }
   return { label: "STRONG", color: "text-green-500", bar: "bg-green-500", width: "w-full" };
 }
 

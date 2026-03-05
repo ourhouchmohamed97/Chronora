@@ -27,7 +27,8 @@ export default function RegisterPage() {
       alert(data.error);
       return;
     }
-    router.push("/login");
+
+    router.push("/verify_email");
   };
 
   const MailIcon = () => (

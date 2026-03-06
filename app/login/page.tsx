@@ -7,6 +7,7 @@ import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
 import {useRouter} from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -57,7 +58,9 @@ export default function LoginPage() {
           </div>
 
           {/* Google Button */}
-          <button className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
+          <button 
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
             hover:border-blue-500
             bg-gray-50 border-gray-200 text-gray-700
             dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-200"

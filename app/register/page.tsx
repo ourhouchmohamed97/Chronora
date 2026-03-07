@@ -31,7 +31,7 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/verify_email");
+    router.push("/verify-email");
   };
 
   const MailIcon = () => (
@@ -120,7 +120,7 @@ export default function RegisterPage() {
                 .
               </label>
             </div>
-            
+
             {error && (
               <p className="text-xs text-red-400 text-center">{error}</p>
             )}

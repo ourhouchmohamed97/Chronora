@@ -14,18 +14,20 @@ export default function RegisterPage() {
   const [agreed, setAgreed] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleRegister = async () => {
+    setError("");
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-  
+
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error);
+      setError(data.error);
       return;
     }
 
@@ -34,7 +36,7 @@ export default function RegisterPage() {
 
   const MailIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
   );
 
@@ -59,8 +61,8 @@ export default function RegisterPage() {
 
           {/* Google Button */}
           <button
-           onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-           className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
             hover:border-blue-500
             bg-gray-50 border-gray-200 text-gray-700
             dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-200"
@@ -96,7 +98,7 @@ export default function RegisterPage() {
               validate
             />
 
-            <PasswordInput 
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -118,7 +120,10 @@ export default function RegisterPage() {
                 .
               </label>
             </div>
-
+            
+            {error && (
+              <p className="text-xs text-red-400 text-center">{error}</p>
+            )}
             {/* Submit */}
             <button
               onClick={handleRegister}

@@ -9,6 +9,15 @@ import Footer from "../components/Footer";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
+const ErrorBox = ({ message }: { message: string }) => (
+  <div className="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><path d="M12 8v4m0 4h.01" />
+    </svg>
+    <p className="text-xs text-red-600 dark:text-red-400 font-medium">{message}</p>
+  </div>
+);
+
 export default function RegisterPage() {
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
@@ -18,6 +27,16 @@ export default function RegisterPage() {
 
   const handleRegister = async () => {
     setError("");
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -87,7 +106,6 @@ export default function RegisterPage() {
 
           {/* Form */}
           <div className="flex flex-col gap-3">
-
             <FormInput
               label="Email Address"
               type="email"
@@ -121,9 +139,8 @@ export default function RegisterPage() {
               </label>
             </div>
 
-            {error && (
-              <p className="text-xs text-red-400 text-center">{error}</p>
-            )}
+            {error && <ErrorBox message={error} />}
+
             {/* Submit */}
             <button
               onClick={handleRegister}

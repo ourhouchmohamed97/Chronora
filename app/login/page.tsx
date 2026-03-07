@@ -10,15 +10,36 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
+const ErrorBox = ({ message }: { message: string }) => (
+  <div className="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><path d="M12 8v4m0 4h.01" />
+    </svg>
+    <p className="text-xs text-red-600 dark:text-red-400 font-medium">{message}</p>
+  </div>
+);
+
 export default function LoginPage() {
   const router = useRouter();
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const verified = searchParams.get("verified");
 
   const handleLogin = async () => {
+    setError("");
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!password) {
+      setError("Please enter your password.");
+      return;
+    }
+
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -28,7 +49,7 @@ export default function LoginPage() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error);
+      setError(data.error);
       return;
     }
 
@@ -139,6 +160,8 @@ export default function LoginPage() {
                 Remember me for 30 days
               </label>
             </div>
+
+            {error && <ErrorBox message={error} />}
 
             {/* Submit */}
             <button

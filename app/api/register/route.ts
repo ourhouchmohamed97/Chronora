@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     });
 
     // Send verification email
-    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify_email/${verificationToken}`;
+    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email/${verificationToken}`;
 
     await resend.emails.send({
       from: "onboarding@resend.dev",

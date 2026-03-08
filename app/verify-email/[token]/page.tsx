@@ -13,8 +13,8 @@ export default function VerifyTokenPage({ params }: Props) {
 
   useEffect(() => {
     if (!token) return;
-    fetch(`/api/verify_email/${token}`)
-      .then(() => router.push("/login"))
+    fetch(`/api/verify-email/${token}`)
+      .then(() => router.push("/login?verified=true"))
       .catch(() => alert("Verification failed"));
   }, [token, router]);
 

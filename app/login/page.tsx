@@ -1,40 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+const ErrorBox = ({ message }: { message: string }) => (
+  <div className="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><path d="M12 8v4m0 4h.01" />
+    </svg>
+    <p className="text-xs text-red-600 dark:text-red-400 font-medium">{message}</p>
+  </div>
+);
+
+function LoginContent() {
   const router = useRouter();
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const searchParams = useSearchParams();
+  const verified = searchParams.get("verified");
 
   const handleLogin = async () => {
+    setError("");
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!password) {
+      setError("Please enter your password.");
+      return;
+    }
+
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-  
+
     const data = await res.json();
-  
+
     if (!res.ok) {
-      alert(data.error);
+      setError(data.error);
       return;
     }
-  
+
     router.push("/dashboard");
   };
 
   const MailIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
   );
 
@@ -57,10 +81,21 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {verified === "true" && (
+            <div className="flex items-center gap-2 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-xl px-4 py-3 mb-4">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <p className="text-xs text-green-600 dark:text-green-400 font-medium text-center w-full">
+                Email verified successfully!
+              </p>
+            </div>
+          )}
+
           {/* Google Button */}
-          <button 
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-          className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
+          <button
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
             hover:border-blue-500
             bg-gray-50 border-gray-200 text-gray-700
             dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-200"
@@ -105,8 +140,8 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <PasswordInput 
-                hideLabel hideSecurityBar 
+              <PasswordInput
+                hideLabel hideSecurityBar
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -126,8 +161,10 @@ export default function LoginPage() {
               </label>
             </div>
 
+            {error && <ErrorBox message={error} />}
+
             {/* Submit */}
-            <button 
+            <button
               onClick={handleLogin}
               className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold tracking-tight transition-all duration-200 mt-1 cursor-pointer">
               Sign in →
@@ -146,5 +183,13 @@ export default function LoginPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }

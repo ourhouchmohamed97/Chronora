@@ -9,32 +9,53 @@ import Footer from "../components/Footer";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
+const ErrorBox = ({ message }: { message: string }) => (
+  <div className="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><path d="M12 8v4m0 4h.01" />
+    </svg>
+    <p className="text-xs text-red-600 dark:text-red-400 font-medium">{message}</p>
+  </div>
+);
+
 export default function RegisterPage() {
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleRegister = async () => {
+    setError("");
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-  
+
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error);
+      setError(data.error);
       return;
     }
 
-    router.push("/verify_email");
+    router.push("/verify-email");
   };
 
   const MailIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
   );
 
@@ -59,8 +80,8 @@ export default function RegisterPage() {
 
           {/* Google Button */}
           <button
-           onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-           className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border text-sm font-medium transition-colors duration-200 mb-4
             hover:border-blue-500
             bg-gray-50 border-gray-200 text-gray-700
             dark:bg-[#0f0f13] dark:border-[#2a2a38] dark:text-gray-200"
@@ -85,7 +106,6 @@ export default function RegisterPage() {
 
           {/* Form */}
           <div className="flex flex-col gap-3">
-
             <FormInput
               label="Email Address"
               type="email"
@@ -96,7 +116,7 @@ export default function RegisterPage() {
               validate
             />
 
-            <PasswordInput 
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -118,6 +138,8 @@ export default function RegisterPage() {
                 .
               </label>
             </div>
+
+            {error && <ErrorBox message={error} />}
 
             {/* Submit */}
             <button

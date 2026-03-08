@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
@@ -19,7 +19,7 @@ const ErrorBox = ({ message }: { message: string }) => (
   </div>
 );
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
@@ -183,5 +183,13 @@ export default function LoginPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }

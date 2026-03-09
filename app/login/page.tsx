@@ -53,7 +53,7 @@ function LoginContent() {
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/upload");
   };
 
   const MailIcon = () => (

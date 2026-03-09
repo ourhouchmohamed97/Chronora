@@ -2,7 +2,6 @@ import { users } from "@/db/schema";
 import { db } from "@/db";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { v4 as uuid } from "uuid";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -21,7 +20,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate verification token & expiration
-    const verificationToken = uuid();
+    const verificationToken = crypto.randomUUID();
     const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     await db.insert(users).values({

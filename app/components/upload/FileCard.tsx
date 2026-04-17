@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { formatFileSize } from "../../../lib/pdf-parser";
+import { formatFileSize } from "../../../lib/pdf-utils";
 
 interface FileCardProps {
   file: File;

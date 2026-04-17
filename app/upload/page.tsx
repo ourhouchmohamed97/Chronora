@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import DropZone from "../components/upload/DropZone";
 import FileCard from "../components/upload/FileCard";
-import { estimateStudyDays } from "../../lib/pdf-parser";
+import { estimateStudyDays } from "../../lib/pdf-utils";
 
 export default function UploadPage() {
   const router = useRouter();

@@ -1,5 +1,6 @@
-// lib/pdf-parser.ts
-import { extractText, getDocumentProxy } from "unpdf";
+// lib/pdf-parser.ts  — SERVER ONLY (Node.js runtime)
+import "server-only";
+import { PDFParse } from "pdf-parse";
 
 export interface ParsedPDF {
   text: string;
@@ -10,16 +11,20 @@ export interface ParsedPDF {
 
 export async function extractTextFromPDF(file: File): Promise<ParsedPDF> {
   const arrayBuffer = await file.arrayBuffer();
-  const buffer = new Uint8Array(arrayBuffer);
+  const buffer = Buffer.from(arrayBuffer);
 
-  let numPages: number;
-  let rawText: string;
+  let numPages = 0;
+  let rawText = "";
 
   try {
-    const pdf = await getDocumentProxy(buffer);
-    numPages = pdf.numPages;
-    const { text } = await extractText(pdf, { mergePages: true });
-    rawText = Array.isArray(text) ? text.join("\n") : text;
+    const parser = new PDFParse({ data: buffer });
+    const info = await parser.getInfo();
+    numPages = info.total ?? 0;
+
+    const result = await parser.getText();
+    rawText = result.text ?? "";
+
+    await parser.destroy();
   } catch (err) {
     console.error("[pdf-parser] error:", err);
     throw new Error(
@@ -46,20 +51,13 @@ export async function extractTextFromPDF(file: File): Promise<ParsedPDF> {
 
 export function cleanText(raw: string): string {
   return raw
-    .replace(/[^\x20-\x7E\n\r\t]/g, " ")
+    // Remove only non-printable control characters (except newline/tab/cr)
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, " ")
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/^\s+|\s+$/gm, "")
     .trim();
 }
 
-export function validatePDFFile(file: File): { valid: boolean; error?: string } {
-  const MAX_SIZE = 50 * 1024 * 1024;
-  if (file.type !== "application/pdf") {
-    return { valid: false, error: "Only PDF files are supported." };
-  }
-  if (file.size > MAX_SIZE) {
-    return { valid: false, error: "File is too large. Maximum size is 50MB." };
-  }
-  return { valid: true };
-}
+// Re-export for any server-side code that still imports from here
+export { validatePDFFile } from "./pdf-utils";

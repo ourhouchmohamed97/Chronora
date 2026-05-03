@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useCallback } from "react";
-import { validatePDFFile } from "../../../lib/pdf-parser";
+import { validatePDFFile } from "../../../lib/pdf-utils";
 
 interface DropZoneProps {
   onFileSelect: (file: File) => void;

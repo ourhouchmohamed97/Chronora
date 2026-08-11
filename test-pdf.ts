@@ -27,7 +27,7 @@ async function test() {
   const parser = new PDFParse({ data: buffer });
   try {
     const info = await parser.getInfo();
-    console.log("Info:", info.numPages);
+    console.log("Info:", info);
     
     const textResult = await parser.getText();
     console.log("Extracted total:", textResult.total);

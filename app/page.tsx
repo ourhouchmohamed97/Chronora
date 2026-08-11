@@ -1,429 +1,656 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import {
-  TrendingUp,
+  Sparkles,
   Calendar,
-  Scale,
-  Clock,
-  Zap,
+  Award,
   Layers,
-  CheckCircle,
+  BookOpen,
+  LineChart,
   ArrowRight,
+  Upload,
+  CheckCircle,
+  Clock,
+  Check,
+  ChevronRight,
+  BookOpenCheck,
+  HelpCircle,
+  RefreshCw,
 } from "lucide-react";
 
+type MockTabId = "summary" | "studyPlan" | "quiz" | "flashcards";
+
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<MockTabId>("summary");
+  const [quizSelectedOption, setQuizSelectedOption] = useState<number | null>(null);
+  const [flashcardFlipped, setFlashcardFlipped] = useState(false);
+
   return (
     <div
-      className="min-h-screen font-sans overflow-x-hidden transition-colors duration-300 bg-white dark:bg-gray-900"
+      className="min-h-screen font-sans overflow-x-hidden transition-colors duration-300 bg-white dark:bg-[#0f172a]"
       style={{ fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif" }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300&display=swap');
+        
         * { box-sizing: border-box; }
-        .hero-title { font-family: 'Sora', sans-serif; }
-        .gradient-text { background: linear-gradient(135deg, #3B5BDB 0%, #7048E8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.5); opacity: 0; } }
-        .float { animation: float 6s ease-in-out infinite; }
-        .fade-up-1 { animation: fadeUp 0.7s ease both; }
-        .fade-up-2 { animation: fadeUp 0.7s 0.15s ease both; }
-        .fade-up-3 { animation: fadeUp 0.7s 0.3s ease both; }
-        .fade-up-4 { animation: fadeUp 0.7s 0.45s ease both; }
-        .fade-in-5 { animation: scaleIn 0.8s 0.55s ease both; }
-        .dashboard-shadow { box-shadow: 0 30px 80px rgba(59, 91, 219, 0.18), 0 8px 24px rgba(0,0,0,0.08); }
-        .dark .dashboard-shadow { box-shadow: 0 30px 80px rgba(59, 91, 219, 0.3), 0 8px 24px rgba(0,0,0,0.5); }
-        .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(59,91,219,0.15); }
-        .dark .card-hover:hover { box-shadow: 0 12px 32px rgba(59,91,219,0.4); }
-        .btn-primary { background: linear-gradient(135deg, #3B5BDB, #7048E8); transition: transform 0.2s, box-shadow 0.2s; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59, 91, 219, 0.4); }
-        .step-line::after { content: ''; position: absolute; top: 50%; left: 100%; width: 100%; height: 2px; background: linear-gradient(90deg, #3B5BDB, #7048E8); transform: translateY(-50%); }
-        .noise { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); }
-        .pricing-card-featured { background: linear-gradient(135deg, #3B5BDB 0%, #7048E8 100%); }
-        .testimonial-card { backdrop-filter: blur(10px); }
+        
+        .serif-title { 
+          font-family: 'Fraunces', Georgia, serif; 
+        }
+        
+        .bg-light-gradient {
+          background: linear-gradient(160deg, #fafafa 0%, #f4f4f8 50%, #fafaf6 100%);
+        }
+        
+        .dark .bg-light-gradient {
+          background: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        }
+
+        .generate-btn { 
+          background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+          transition: transform .2s, box-shadow .2s, opacity .2s; 
+        }
+        .generate-btn:hover { 
+          transform: translateY(-2px); 
+          box-shadow: 0 12px 32px rgba(30,41,59,.25); 
+        }
+        
+        .dark .generate-btn {
+          background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+        .dark .generate-btn:hover {
+          box-shadow: 0 12px 32px rgba(245, 158, 11, 0.35);
+        }
+
+        .btn-amber {
+          background: linear-gradient(135deg, #f59e0b, #f97316);
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-amber:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+        }
+
+        .card-premium {
+          background: white;
+          border: 1px solid rgba(241, 245, 249, 0.8);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .card-premium:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+          border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        .dark .card-premium {
+          background: #1e293b;
+          border: 1px solid rgba(51, 65, 85, 0.8);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .dark .card-premium:hover {
+          border-color: rgba(245, 158, 11, 0.5);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 3D Flashcard Flip styles */
+        .perspective {
+          perspective: 1000px;
+        }
+        .flip-card-inner {
+          transition: transform 0.6s;
+          transform-style: preserve-3d;
+        }
+        .flip-card-flipped {
+          transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+          backface-visibility: hidden;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        .flip-card-back {
+          transform: rotateY(180deg);
+        }
       `}</style>
 
       <Navbar />
 
-      <main className="flex-grow">
+      <main className="flex-grow bg-light-gradient">
+        
         {/* Hero Section */}
-        <section className="pt-28 pb-16 px-6 relative overflow-hidden">
-          <div className="absolute inset-0 noise pointer-events-none" />
-          <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full opacity-10 pointer-events-none"
-            style={{
-              background: "radial-gradient(ellipse, #3B5BDB 0%, transparent 70%)",
-            }}
-          />
-
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="fade-up-1 inline-flex items-center gap-2 border text-xs font-semibold px-3 py-1.5 rounded-full mb-6 bg-blue-50 border-blue-100 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
-              </span>
-              Now with Advanced Deadline Prediction
+        <section className="pt-24 pb-20 px-4 relative overflow-hidden">
+          {/* Subtle warm glow background blobs */}
+          <div className="absolute top-20 left-1/4 w-[350px] h-[350px] rounded-full bg-amber-200/20 dark:bg-amber-500/5 blur-3xl pointer-events-none" />
+          <div className="absolute top-40 right-1/4 w-[400px] h-[400px] rounded-full bg-orange-200/20 dark:bg-orange-500/5 blur-3xl pointer-events-none" />
+          
+          <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 relative z-10">
+            
+            {/* Left side: Heading & CTA */}
+            <div className="flex-1 text-center lg:text-left space-y-6">
+              
+              <div className="inline-flex items-center gap-2 border text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-50 border-amber-200/50 text-amber-700 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-300">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                Now Powered by Gemini 2.5 Flash
+              </div>
+              
+              <h1 className="serif-title text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+                Transform your study <br className="hidden sm:inline" />
+                materials with <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">AI</span>.
+              </h1>
+              
+              <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Upload any PDF syllabus, textbook chapter, or lecture notes. Chronora instantly extracts key concepts, schedules a day-by-day study calendar, and designs custom quizzes & flashcards.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <Link href="/upload" className="w-full sm:w-auto">
+                  <button className="generate-btn text-white w-full sm:w-auto font-bold px-7 py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                    <Upload className="w-4 h-4" />
+                    Upload your PDF
+                  </button>
+                </Link>
+                <a href="#how-it-works" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto font-semibold px-7 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+                    How it works
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </button>
+                </a>
+              </div>
+              
+              {/* Trust Badge */}
+              <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-slate-400 text-xs font-medium">
+                <div className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-500" /> No Credit Card Required
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-500" /> Free Tier Available
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-500" /> Under 60s Processing
+                </div>
+              </div>
             </div>
-
-            <h1 className="hero-title fade-up-2 text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-5 text-gray-900 dark:text-white">
-              Study <span className="gradient-text italic">Smarter,</span>
-              <br />
-              Not Harder.
-            </h1>
-
-            <p className="fade-up-3 text-lg max-w-xl mx-auto mb-8 leading-relaxed text-slate-500 dark:text-slate-400">
-              Unlock your full academic potential with our AI-driven scheduler.
-              We analyze your workload, predict deadlines, and create the
-              perfect study routine tailored just for you.
-            </p>
-
-            <div className="fade-up-4 flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
-              <button className="btn-primary text-white font-semibold px-7 py-3.5 rounded-xl flex items-center gap-2 shadow-lg">
-                Start Free Trial
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
-              <button className="font-semibold px-7 py-3.5 rounded-xl border transition-all flex items-center gap-2 text-slate-700 border-slate-200 hover:border-blue-300 hover:text-blue-600 dark:text-slate-300 dark:border-slate-700 dark:hover:border-blue-600 dark:hover:text-blue-400">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                View Demo
-              </button>
-            </div>
-
-            {/* Dashboard Mockup */}
-            <div className="fade-in-5 float relative mx-auto max-w-2xl">
-              <div className="rounded-2xl border overflow-hidden bg-white border-slate-100 dashboard-shadow dark:bg-gray-800 dark:border-slate-700">
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-700">
+            
+            {/* Right side: Interactive Product Mockup */}
+            <div className="flex-1 w-full max-w-xl">
+              <div className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-xl overflow-hidden">
+                
+                {/* Header Mockup */}
+                <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                      Performance Analytics
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">
-                      Track your progress and optimize your learning efficiency
-                    </p>
+                    <h3 className="serif-title text-sm font-bold text-slate-950 dark:text-white flex items-center gap-1.5">
+                      <BookOpenCheck className="w-4 h-4 text-amber-500" />
+                      Photosynthesis & Respiration.pdf
+                    </h3>
+                    <p className="text-[10px] text-slate-400">12 pages · 4,280 words · AI Study Package</p>
                   </div>
                   <div className="flex gap-1.5">
-                    {["Weekly", "Monthly", "Semester"].map((t, i) => (
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                  </div>
+                </div>
+
+                {/* Tab selector */}
+                <div className="p-3 bg-slate-50/50 dark:bg-slate-950/20 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-850">
+                    {[
+                      { id: "summary", label: "Summary", icon: <Sparkles className="w-3.5 h-3.5" /> },
+                      { id: "studyPlan", label: "Study Plan", icon: <Calendar className="w-3.5 h-3.5" /> },
+                      { id: "quiz", label: "Quiz", icon: <Award className="w-3.5 h-3.5" /> },
+                      { id: "flashcards", label: "Flashcards", icon: <Layers className="w-3.5 h-3.5" /> },
+                    ].map((tab) => (
                       <button
-                        key={t}
-                        className={`text-[10px] px-2.5 py-1 rounded-md font-medium ${
-                          i === 0
-                            ? "bg-blue-600 text-white"
-                            : "text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-gray-700"
+                        key={tab.id}
+                        id={`mock-tab-${tab.id}`}
+                        onClick={() => {
+                          setActiveTab(tab.id as MockTabId);
+                          // Reset state on tab change
+                          if (tab.id !== "quiz") setQuizSelectedOption(null);
+                        }}
+                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                          activeTab === tab.id
+                            ? "bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm"
+                            : "text-slate-500 hover:text-slate-700 dark:text-slate-400"
                         }`}
                       >
-                        {t}
+                        <span className={activeTab === tab.id ? "text-amber-500" : ""}>{tab.icon}</span>
+                        <span className="hidden sm:inline">{tab.label}</span>
                       </button>
                     ))}
-                    <button className="text-[10px] px-2.5 py-1 rounded-md border flex items-center gap-1 text-slate-500 border-slate-200 hover:bg-slate-50 dark:text-slate-400 dark:border-slate-600 dark:hover:bg-gray-700">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                      </svg>
-                      Export
+                  </div>
+                </div>
+
+                {/* Content Area (Depends on Active Tab) */}
+                <div className="p-5 min-h-[260px] flex flex-col justify-between">
+                  
+                  {/* SUMMARY TAB */}
+                  {activeTab === "summary" && (
+                    <div className="space-y-4">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded">Core Overview</span>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                          This document covers photosynthesis in plant chloroplasts (light-dependent reactions and the Calvin Cycle) and contrasts it with cellular respiration, outlining the ecological carbon-oxygen cycle.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Key Concepts Identified</span>
+                        
+                        <div className="p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800/50 flex items-start gap-2.5 shadow-sm">
+                          <span className="w-5 h-5 rounded bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-xs font-bold text-amber-600">1</span>
+                          <div>
+                            <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Light-Dependent Reactions</h4>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Occur in the thylakoid membranes; chlorophyll captures sunlight to synthesize ATP and NADPH, splitting water to release oxygen.</p>
+                          </div>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800/50 flex items-start gap-2.5 shadow-sm">
+                          <span className="w-5 h-5 rounded bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-xs font-bold text-amber-600">2</span>
+                          <div>
+                            <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Calvin Cycle</h4>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Stroma-based carbon fixation which converts CO2 into G3P (glucose precursor) utilizing the previously generated ATP and NADPH.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* STUDY PLAN TAB */}
+                  {activeTab === "studyPlan" && (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center bg-amber-500/5 dark:bg-amber-500/10 px-3 py-2 rounded-xl border border-amber-500/10">
+                        <span className="text-xs font-bold text-slate-800 dark:text-amber-300">Target Study Track: 3 Days</span>
+                        <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1"><Clock className="w-3 h-3" /> ~45 mins/day</span>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {[
+                          { day: "Day 1", title: "Thylakoids & Light Capture", type: "Read + Quiz", dur: "40 min", active: true },
+                          { day: "Day 2", title: "Calvin Cycle & Carbon Fixation", type: "Practice Quiz", dur: "35 min", active: false },
+                          { day: "Day 3", title: "Photosynthesis vs. Respiration", type: "Active Recall", dur: "50 min", active: false },
+                        ].map((d) => (
+                          <div
+                            key={d.day}
+                            className={`p-2.5 rounded-xl border transition-colors flex items-center justify-between ${
+                              d.active
+                                ? "border-amber-200 bg-amber-50/20 dark:border-amber-800/50 dark:bg-amber-950/20"
+                                : "border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800/40"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className={`w-2 h-2 rounded-full ${d.active ? "bg-amber-500 animate-pulse" : "bg-slate-300 dark:bg-slate-700"}`} />
+                              <div>
+                                <span className="text-[10px] font-bold text-amber-600 uppercase">{d.day}</span>
+                                <h4 className="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-none mt-0.5">{d.title}</h4>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded font-medium">{d.type}</span>
+                              <p className="text-[9px] text-slate-400 mt-0.5 font-bold">{d.dur}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* QUIZ TAB */}
+                  {activeTab === "quiz" && (
+                    <div className="space-y-4">
+                      <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="text-amber-500 font-bold mr-1">Q1.</span>
+                        Where do the light-dependent reactions of photosynthesis specifically take place?
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {[
+                          { id: 0, text: "A. Stroma of the chloroplast" },
+                          { id: 1, text: "B. Thylakoid membrane", correct: true },
+                          { id: 2, text: "C. Mitochondrial matrix" },
+                          { id: 3, text: "D. Cytoplasm" },
+                        ].map((opt) => {
+                          const isSelected = quizSelectedOption === opt.id;
+                          const hasSelectedAny = quizSelectedOption !== null;
+                          let btnClass = "border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850";
+                          
+                          if (isSelected) {
+                            if (opt.correct) {
+                              btnClass = "border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-950/20 dark:text-green-300";
+                            } else {
+                              btnClass = "border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-300";
+                            }
+                          } else if (hasSelectedAny && opt.correct) {
+                            btnClass = "border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-950/20 dark:text-green-300";
+                          }
+
+                          return (
+                            <button
+                              key={opt.id}
+                              id={`mock-quiz-opt-${opt.id}`}
+                              onClick={() => {
+                                if (quizSelectedOption === null) setQuizSelectedOption(opt.id);
+                              }}
+                              className={`p-2.5 rounded-xl border text-left text-xs font-medium transition-all ${btnClass}`}
+                            >
+                              {opt.text}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {quizSelectedOption !== null && (
+                        <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-850 text-[10px] text-slate-500 dark:text-slate-400">
+                          {quizSelectedOption === 1 ? (
+                            <span className="text-green-600 font-bold">✓ Correct! </span>
+                          ) : (
+                            <span className="text-red-500 font-bold">✗ Incorrect. </span>
+                          )}
+                          Chlorophyll is embedded in the thylakoid membrane where it absorbs light, triggering the light-dependent stage.
+                        </div>
+                      )}
+                      
+                      {quizSelectedOption === null && (
+                        <p className="text-[10px] text-center text-slate-400 animate-pulse">Click any option to test interactive feedback!</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* FLASHCARDS TAB */}
+                  {activeTab === "flashcards" && (
+                    <div className="space-y-4 flex flex-col items-center">
+                      <span className="text-[10px] text-slate-400">Click to flip the flashcard!</span>
+                      
+                      <div 
+                        id="mock-flashcard-container"
+                        onClick={() => setFlashcardFlipped(!flashcardFlipped)}
+                        className="w-full max-w-[280px] h-[140px] perspective cursor-pointer"
+                      >
+                        <div className={`w-full h-full relative flip-card-inner rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm ${
+                          flashcardFlipped ? "flip-card-flipped" : ""
+                        }`}>
+                          {/* Front */}
+                          <div className="flip-card-front bg-white dark:bg-slate-800 p-4 flex flex-col items-center justify-center rounded-2xl">
+                            <span className="text-[9px] uppercase font-bold tracking-wider text-amber-500 mb-2">Term</span>
+                            <h4 className="serif-title text-base font-bold text-slate-800 dark:text-white text-center">Photolysis</h4>
+                          </div>
+                          
+                          {/* Back */}
+                          <div className="flip-card-back bg-slate-950 text-white p-4 flex flex-col items-center justify-center rounded-2xl">
+                            <span className="text-[9px] uppercase font-bold tracking-wider text-amber-400 mb-2">Definition</span>
+                            <p className="text-xs text-slate-200 text-center leading-relaxed">
+                              The chemical splitting of water molecules into oxygen, hydrogen ions, and electrons by light energy during photosynthesis.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bottom Footer inside card */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[9px] text-slate-400 font-semibold">
+                    <span>STUDYING MADE SMART</span>
+                    <button 
+                      onClick={() => {
+                        setQuizSelectedOption(null);
+                        setFlashcardFlipped(false);
+                      }}
+                      className="flex items-center gap-1 text-slate-500 hover:text-amber-500"
+                    >
+                      <RefreshCw className="w-2.5 h-2.5" /> Reset View
                     </button>
                   </div>
                 </div>
 
-                {/* Stats Row */}
-                <div className="grid grid-cols-4 gap-px border-b bg-slate-100 border-slate-100 dark:bg-gray-700 dark:border-slate-700">
-                  {[
-                    { label: "Total Study Hours", value: "28.4 hrs", delta: "+13.8%", pos: true },
-                    { label: "Task Completion", value: "91%", delta: "+4.2%", pos: true },
-                    { label: "Overdue Tasks", value: "3", delta: "", pos: false },
-                    { label: "Avg. Focus Depth", value: "42 min", delta: "-1:00", pos: false },
-                  ].map((s) => (
-                    <div key={s.label} className="p-3 bg-white dark:bg-gray-800">
-                      <p className="text-[9px] mb-1 text-slate-400 dark:text-slate-500">{s.label}</p>
-                      <p className="text-base font-bold text-slate-800 dark:text-slate-200">{s.value}</p>
-                      {s.delta && (
-                        <p className={`text-[9px] font-medium ${s.delta.startsWith("+") ? "text-emerald-500" : "text-red-400"}`}>
-                          {s.delta}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Charts */}
-                <div className="grid grid-cols-2 gap-4 p-4">
-                  {/* Bar chart */}
-                  <div className="rounded-xl p-3 bg-slate-50 dark:bg-gray-700">
-                    <p className="text-[10px] font-semibold mb-3 text-slate-700 dark:text-slate-300">
-                      Task Completion Trend
-                    </p>
-                    <div className="flex items-end gap-1 h-16">
-                      {[35, 55, 45, 72, 60, 85, 78, 90, 82, 95].map((h, i) => (
-                        <div
-                          key={i}
-                          className={`flex-1 rounded-sm ${
-                            i > 6
-                              ? "bg-gradient-to-b from-[#3B5BDB] to-[#7048E8]"
-                              : "bg-slate-200 dark:bg-slate-600"
-                          }`}
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-between mt-2">
-                      {["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"].map((w) => (
-                        <span key={w} className="text-[8px] text-slate-400 dark:text-slate-500">{w}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Radial */}
-                  <div className="rounded-xl p-3 flex flex-col items-center bg-slate-50 dark:bg-gray-700">
-                    <p className="text-[10px] font-semibold mb-2 self-start text-slate-700 dark:text-slate-300">
-                      Productivity Pulse
-                    </p>
-                    <div className="relative w-16 h-16 my-1">
-                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                        <circle cx="18" cy="18" r="15.9" fill="none" className="stroke-slate-200 dark:stroke-gray-600" strokeWidth="3" />
-                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad)" strokeWidth="3" strokeDasharray="88, 100" strokeLinecap="round" />
-                        <defs>
-                          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#3B5BDB" />
-                            <stop offset="100%" stopColor="#7048E8" />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-sm font-bold text-slate-800 dark:text-slate-200">88</span>
-                      </div>
-                    </div>
-                    <div className="w-full space-y-1 mt-1">
-                      {[
-                        { label: "Deep work %", val: "34%" },
-                        { label: "Distraction rate", val: "9%" },
-                      ].map((s) => (
-                        <div key={s.label} className="flex justify-between">
-                          <span className="text-[9px] text-slate-500 dark:text-slate-400">{s.label}</span>
-                          <span className="text-[9px] font-semibold text-slate-700 dark:text-slate-300">{s.val}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="py-20 transition-colors duration-300 bg-gray-50 dark:bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
-              Master Your Schedule
-            </h2>
-            <p className="text-xl mb-12 text-center max-w-3xl mx-auto text-gray-600 dark:text-gray-300">
-              Our suite of intelligent tools takes the guesswork out of
-              planning, allowing you to focus on what actually matters—learning.
-            </p>
+        {/* Features Grid Section */}
+        <section id="features" className="py-24 px-4 bg-slate-50/50 dark:bg-slate-900/30 border-y border-slate-100 dark:border-slate-800">
+          <div className="max-w-6xl mx-auto space-y-12">
+            
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <h2 className="serif-title text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                Everything you need to master exams.
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-base">
+                Chronora takes the chaos out of studying by converting dense PDF material into structured, manageable, and highly effective components.
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Zap className="w-8 h-8" />,
-                  title: "AI Smart Scheduling",
-                  description: "Our algorithm learns your peak focus times and automatically sorts difficult subjects when you're most productive.",
+                  icon: <Sparkles className="w-6 h-6 text-amber-500" />,
+                  title: "AI Core Summaries",
+                  description: "Extract clean overviews and essential concepts from complicated textbooks and slides. Cut out the noise.",
                 },
                 {
-                  icon: <Scale className="w-8 h-8" />,
-                  title: "Workload Balancing",
-                  description: "Visualize your weekly efforts. We automatically redistribute tasks if your 'stress score' hits critical levels.",
+                  icon: <Calendar className="w-6 h-6 text-amber-500" />,
+                  title: "Daily Study Schedules",
+                  description: "Recieve a day-by-day structured learning path. Know exactly what to read and when to practice.",
                 },
                 {
-                  icon: <Clock className="w-8 h-8" />,
-                  title: "Deadline Prediction",
-                  description: "Based on past performance and complexity, we tell you exactly when to start a project to finish stress-free.",
+                  icon: <Award className="w-6 h-6 text-amber-500" />,
+                  title: "Interactive Practice Quizzes",
+                  description: "Generate deep learning quizzes with detailed explanations of right and wrong options.",
                 },
                 {
-                  icon: <Layers className="w-8 h-8" />,
-                  title: "Distribution Free",
-                  description: "Sync with your browser to automatically block distracting apps during your scheduled deep-work sessions.",
+                  icon: <Layers className="w-6 h-6 text-amber-500" />,
+                  title: "Smart Flashcards",
+                  description: "Leverage active recall and spaced repetition with auto-generated cards covering key definitions.",
                 },
                 {
-                  icon: <TrendingUp className="w-8 h-8" />,
-                  title: "Instant Adjustments",
-                  description: "Life happens. If you miss a block, simply tell the AI and your entire plan recalibrates in seconds.",
+                  icon: <LineChart className="w-6 h-6 text-amber-500" />,
+                  title: "Workload Estimation",
+                  description: "Calculate approximate timelines based on word count. Distribute your work to avoid last-minute cramming.",
                 },
                 {
-                  icon: <Calendar className="w-8 h-8" />,
-                  title: "Full Integration",
-                  description: "Works seamlessly with Google Calendar, Outlook, and Notion to keep your whole life in one single view.",
+                  icon: <BookOpen className="w-6 h-6 text-amber-500" />,
+                  title: "Multi-type PDF Processing",
+                  description: "From lecture slides to full syllabi and chapters up to 50MB. Safe, secure, and parsed under a minute.",
                 },
-              ].map((feature, index) => (
-                <div
-                  key={index}
-                  className="rounded-xl p-6 shadow-sm hover:shadow-md transition bg-white hover:shadow-indigo-200/50 dark:bg-gray-900 dark:hover:shadow-indigo-900/30"
-                >
-                  <div className="mb-4 text-indigo-600 dark:text-indigo-400">
-                    {feature.icon}
+              ].map((feat, i) => (
+                <div key={i} className="card-premium p-6 rounded-2xl flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/5 dark:bg-amber-500/10 flex items-center justify-center border border-amber-500/10">
+                      {feat.icon}
+                    </div>
+                    <h3 className="serif-title text-lg font-bold text-slate-900 dark:text-white">{feat.title}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{feat.description}</p>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
                 </div>
               ))}
             </div>
+
           </div>
         </section>
 
         {/* 3 Steps Section */}
-        <section className="py-20 transition-colors duration-300 bg-white dark:bg-gray-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
-              Your Path to 4.0 in 3 Steps
-            </h2>
-            <p className="text-xl mb-12 text-center text-gray-600 dark:text-gray-300">
-              Simple, automated, and powerful. Getting started takes less than two minutes.
-            </p>
+        <section id="how-it-works" className="py-24 px-4 bg-white dark:bg-[#0f172a]">
+          <div className="max-w-6xl mx-auto space-y-16">
+            
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <h2 className="serif-title text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                How Chronora works
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-base">
+                Get from uploaded files to ready-to-study materials in three quick steps.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+              {/* Connector Line (Desktop) */}
+              <div className="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-slate-100 dark:bg-slate-800 z-0" />
+
               {[
                 {
                   step: "01",
-                  title: "Sync Your Data",
-                  description: "Connect your syllabus, calendars, and current task lists. We securely import all your commitments.",
+                  title: "Upload Study Materials",
+                  description: "Drag & drop your lecture PDF, syllabi, or textbook chapter. We validate text readability instantly.",
+                  icon: <Upload className="w-5 h-5 text-amber-600" />,
                 },
                 {
                   step: "02",
-                  title: "AI Analyzes",
-                  description: "The engine identifies deadlines, evaluates task complexity, and checks your available hours.",
+                  title: "AI Processes Content",
+                  description: "Our engine reads the PDF text, extracts the central concepts, and constructs custom learning modules.",
+                  icon: <Sparkles className="w-5 h-5 text-amber-600" />,
                 },
                 {
                   step: "03",
-                  title: "Optimized Plan",
-                  description: "Receive a pixel-perfect daily routine that maximizes learning while preserving your mental health.",
+                  title: "Begin Master Track",
+                  description: "Read structured summaries, solve the practice quizzes, review cards, and execute your study plan.",
+                  icon: <BookOpenCheck className="w-5 h-5 text-amber-600" />,
                 },
-              ].map((item, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-indigo-100 dark:bg-indigo-900/40">
-                    <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">
-                      {item.step}
-                    </span>
+              ].map((step, index) => (
+                <div key={index} className="flex flex-col items-center text-center space-y-4 relative z-10">
+                  <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-900 border-2 border-amber-500 flex items-center justify-center shadow-md">
+                    <span className="text-slate-800 dark:text-amber-500 text-sm font-bold">{step.icon}</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-bold tracking-widest text-amber-600 uppercase">Step {step.step}</span>
+                    <h3 className="serif-title text-lg font-bold text-slate-900 dark:text-white">{step.title}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">{step.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
+
           </div>
         </section>
 
         {/* Pricing Section */}
-        <section className="py-20 transition-colors duration-300 bg-gray-50 dark:bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
-              Simple Pricing for Every Goal
-            </h2>
-            <p className="text-xl mb-12 text-center text-gray-600 dark:text-gray-300">
-              Start for free and upgrade as you grow. No hidden fees, cancel anytime.
-            </p>
+        <section id="pricing" className="py-24 px-4 bg-slate-50/50 dark:bg-slate-900/30 border-y border-slate-100 dark:border-slate-800">
+          <div className="max-w-6xl mx-auto space-y-16">
+            
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <h2 className="serif-title text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                Simple, transparent pricing.
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-base">
+                Start studying for free. Upgrade as you need more monthly uploads.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  name: "Student",
+                  name: "Free Tier",
                   price: "$0",
-                  period: "/mo",
-                  description: "Perfect for high school or casual learners.",
-                  features: ["Basic analytics", "Task scheduling", "Email support"],
+                  sub: "Free forever",
+                  desc: "Ideal for individual student assignments.",
+                  features: ["5 PDF uploads / month", "Gemini 2.5 Flash summaries", "Basic practice quizzes", "Spaced flashcards"],
+                  cta: "Start Studying",
+                  href: "/upload",
+                  popular: false,
                 },
                 {
-                  name: "Professor",
-                  price: "$12",
-                  period: "/mo",
-                  description: "Designed for university students & power users.",
-                  features: ["Advanced analytics", "Priority support", "Team features", "API access"],
+                  name: "Premium Scholar",
+                  price: "$8",
+                  sub: "/ month",
+                  desc: "Perfect for full-time university students.",
+                  features: ["Unlimited PDF uploads", "Gemini 2.5 Flash & Pro models", "Deep-dive mode available", "Advanced practice quizzes", "Unlimited study plans", "Priority processing speed"],
+                  cta: "Go Premium",
+                  href: "/upload",
                   popular: true,
                 },
                 {
-                  name: "Team",
-                  price: "$29",
-                  period: "/mo",
-                  description: "For teams of 3 or more.",
-                  features: ["Team management", "Collaboration tools", "Analytics dashboard", "24/7 support"],
+                  name: "Study Circle",
+                  price: "$24",
+                  sub: "/ month",
+                  desc: "Designed for study groups and teams.",
+                  features: ["Collaborative study hubs", "Shared flashcard groups", "Team analytics dashboards", "CSV export options", "Dedicated group support"],
+                  cta: "Start Group Track",
+                  href: "/upload",
+                  popular: false,
                 },
-              ].map((plan, index) => (
-                <div
-                  key={index}
-                  className={`rounded-xl p-6 shadow-sm hover:shadow-md transition relative bg-white dark:bg-gray-900 ${
-                    plan.popular ? "border-2 border-indigo-600" : "border border-transparent"
+              ].map((plan, i) => (
+                <div 
+                  key={i} 
+                  className={`relative rounded-2xl p-8 flex flex-col justify-between ${
+                    plan.popular
+                      ? "bg-slate-900 text-white shadow-lg border-2 border-amber-500 dark:bg-slate-800"
+                      : "bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800"
                   }`}
                 >
                   {plan.popular && (
-                    <span className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm">
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                       Most Popular
                     </span>
                   )}
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{plan.name}</h3>
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{plan.price}</span>
-                    <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="serif-title text-lg font-bold">{plan.name}</h3>
+                      <p className={`text-xs mt-1 ${plan.popular ? "text-slate-400" : "text-slate-500"}`}>{plan.desc}</p>
+                    </div>
+
+                    <div className="flex items-baseline">
+                      <span className="serif-title text-4xl font-bold">{plan.price}</span>
+                      <span className={`text-xs ml-1 ${plan.popular ? "text-slate-400" : "text-slate-500"}`}>{plan.sub}</span>
+                    </div>
+
+                    <ul className="space-y-3.5 border-t border-slate-100 dark:border-slate-800 pt-6">
+                      {plan.features.map((f, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5 text-xs">
+                          <CheckCircle className={`w-4 h-4 flex-shrink-0 ${plan.popular ? "text-amber-400" : "text-amber-500"}`} />
+                          <span className={plan.popular ? "text-slate-200" : "text-slate-600 dark:text-slate-350"}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p className="mb-6 text-gray-600 dark:text-gray-300">{plan.description}</p>
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-center text-gray-600 dark:text-gray-300">
-                        <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 mr-2" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    className={`w-full py-2 rounded-lg font-semibold transition ${
+
+                  <Link href={plan.href} className="mt-8 block">
+                    <button className={`w-full py-3 rounded-xl text-xs font-bold transition-all ${
                       plan.popular
-                        ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                        : "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-900/20"
-                    }`}
-                  >
-                    Get Started
-                  </button>
+                        ? "bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-md"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white"
+                    }`}>
+                      {plan.cta}
+                    </button>
+                  </Link>
                 </div>
               ))}
             </div>
+
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-indigo-600 dark:bg-indigo-700">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to reclaim your time?
+        <section className="py-24 px-4 bg-slate-900 dark:bg-slate-950 text-white relative overflow-hidden border-t border-slate-800">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
+          <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
+            <h2 className="serif-title text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+              Ready to learn smarter? <br />
+              Accelerate your progress today.
             </h2>
-            <p className="text-xl text-indigo-100 dark:text-indigo-200 mb-10">
-              Stop stressing about deadlines. Let our AI handle the planning so
-              you can focus on the learning. Join thousands of successful students today.
+            <p className="text-slate-400 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+              Stop struggling with hours of reading. Let Chronora organize your content, build study paths, and test your recall with AI.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-indigo-600 dark:bg-gray-100 dark:text-indigo-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-200 transition shadow-lg flex items-center justify-center gap-2">
-                Join for Free <ArrowRight className="w-5 h-5" />
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-800 transition">
-                Schedule a Demo
-              </button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/upload" className="w-full sm:w-auto">
+                <button className="btn-amber text-slate-950 font-bold px-8 py-4 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-lg w-full sm:w-auto">
+                  Get Started for Free
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
             </div>
-            <p className="text-indigo-200 dark:text-indigo-300 mt-6">
-              No credit card required.{" "}
-              <span className="font-semibold">Free forever version available.</span>
-            </p>
           </div>
         </section>
+
       </main>
 
       <Footer />

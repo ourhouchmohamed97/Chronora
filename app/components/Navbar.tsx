@@ -19,14 +19,19 @@ export default function Navbar() {
 
         {/* Nav Links — hidden on mobile */}
         <div className="hidden md:flex gap-8">
-          {["Features", "How it works", "Pricing"].map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="text-sm font-medium transition-colors duration-200 text-gray-500 hover:text-blue-500 dark:text-gray-400"
+          {[
+            { label: "Features", href: "/#features" },
+            { label: "How it works", href: "/#how-it-works" },
+            { label: "Pricing", href: "/#pricing" },
+            { label: "Upload PDF", href: "/upload" },
+          ].map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="text-slate-650 hover:text-amber-500 text-sm font-medium transition-colors duration-200 dark:text-slate-400 dark:hover:text-amber-500"
             >
-              {item}
-            </a>
+              {item.label}
+            </Link>
           ))}
         </div>
 
@@ -52,13 +57,13 @@ export default function Navbar() {
           {/* Sign In — hidden on mobile */}
           <Link
             href="/login"
-            className="hidden sm:block text-sm font-medium transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
+            className="hidden sm:block text-slate-700 hover:text-amber-500 text-sm font-medium transition-colors dark:text-slate-200 dark:hover:text-amber-500"
           >
             Sign In
           </Link>
 
           <Link href="/register">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200">
+            <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 shadow-sm cursor-pointer">
               Start Free
             </button>
           </Link>
@@ -85,18 +90,25 @@ export default function Navbar() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden px-4 pb-4 flex flex-col gap-3 border-t border-gray-100 dark:border-[#2a2a38]">
-          {["Features", "How it works", "Pricing"].map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="text-sm font-medium py-1 transition-colors text-gray-600 hover:text-blue-500 dark:text-gray-400"
+          {[
+            { label: "Features", href: "/#features" },
+            { label: "How it works", href: "/#how-it-works" },
+            { label: "Pricing", href: "/#pricing" },
+            { label: "Upload PDF", href: "/upload" },
+          ].map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              className="text-slate-650 hover:text-amber-500 text-sm font-medium py-1 transition-colors dark:text-slate-400 dark:hover:text-amber-500"
             >
-              {item}
-            </a>
+              {item.label}
+            </Link>
           ))}
           <Link
             href="/login"
-            className="text-sm font-medium py-1 transition-colors text-gray-800 hover:text-blue-500 dark:text-gray-200"
+            onClick={() => setMenuOpen(false)}
+            className="text-slate-800 hover:text-amber-500 text-sm font-medium py-1 transition-colors dark:text-slate-200 dark:hover:text-amber-500"
           >
             Sign In
           </Link>
